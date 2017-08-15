@@ -156,7 +156,6 @@
         display: flex;
         flex-wrap: nowrap;
         .label {
-          border-right: 1px solid #ddd;
         }
       }
     }
