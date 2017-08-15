@@ -1,0 +1,112 @@
+@import "colour";
+body {
+  background-color: $color-body-bg;
+}
+// ui样式重置
+// 首页
+.header {
+  .mu-appbar-title {
+    text-align: center;
+  }
+}
+// 侧边栏样式
+.slideout-menu {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 250px;
+  min-height: 100vh;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  z-index: 0;
+  display: none;
+}
+.slideout-menu-right {
+  right: 0;
+  background-color: $color-background;
+  background-image: linear-gradient(145deg, #ef5350, #e55c5c);
+}
+.slideout-panel {
+  position: relative;
+  z-index: 1;
+  will-change: transform;
+  background-color: $color-body-bg;
+  min-height: 100vh;
+}
+.slideout-open,
+.slideout-open body,
+.slideout-open .slideout-panel {
+  overflow: hidden;
+}
+.slideout-open .slideout-menu {
+  display: block;
+}
+// 侧边栏内容样式，nav
+.nav {
+  .mu-item-left,
+  .mu-item-title {
+    color: #fff;
+  }
+  .mu-item-wrapper {
+    margin-top: 10px;
+    padding-left: 20px;
+  }
+}
+
+// 上传页面
+.upload {
+  .city {
+    .mu-flat-button {
+      width: 100%;
+      text-align: left;
+      font-size: 16px;
+    }
+  }
+  // 图片裁切
+  .g-core-image-corp-container {
+    background-color: #000;
+  }
+  .g-crop-image-box{
+    // 裁切背景颜色
+    .g-crop-image-principal {
+      background-color: #c5c5c5;
+    }
+    // 放大滚动条颜色
+    .g-resize-bar {
+      background-color: $color-background-opacity;
+      .g-resize-highlight {
+        background-color: $color-background;
+      }
+    }
+    // 可拖动的小球颜色
+    .crop-box {
+      .g-resize {
+        background-color: $color-background;
+        box-shadow: 0 3px 10px rgba(0,0,0,.156863), 0 3px 10px rgba(0,0,0,.227451);
+      }
+    }
+  }
+  // 确定按钮颜色
+  .g-core-image-corp-container {
+    .info-aside {
+      background-color: #000;
+      .btn-upload {
+        background: $color-background;
+        border-color: $color-background;
+      }
+    }
+    .btn:active {
+      background: $color-background;
+    }
+  }
+}
+// popup
+.mu-popup-bottom {
+  width: 100%;
+}
+.set-header {
+  height: 40px;
+  .mu-appbar-title {
+    font-size: 16px;
+  }
+}

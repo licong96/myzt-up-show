@@ -3,7 +3,7 @@
   <div class="mobile-tear-sheet-container" :style="{'height': height}">
     <slot></slot>
   </div>
-  <!-- <img class="mobile-tear-sheet-bottom-tear" src="../common/images/bottom-tear.svg" /> -->
+  <img class="mobile-tear-sheet-bottom-tear" src="../../common/images/bottom-tear.svg" />
 </div>
 </template>
 

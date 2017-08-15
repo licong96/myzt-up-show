@@ -7,11 +7,13 @@ import MuseUI from 'muse-ui'
 
 import '@/common/css/normalize.css'
 import 'muse-ui/dist/muse-ui.css'
-import 'muse-ui/dist/theme-light.css' // 使用 light 主题
+import '@/common/css/theme-light.css' // 使用 light 主题
+import '@/common/sass/museui-reset.scss'  // 修改样式
 Vue.use(MuseUI)
 
 Vue.config.productionTip = false
 
+window.slideNav = '全局变量'      // 全局变量用来保存侧边栏导航
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
