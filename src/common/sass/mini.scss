@@ -1,0 +1,42 @@
+@mixin border($type) {
+  position: relative;
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    z-index: 8;
+    background: rgba(0,0,0,.12);
+    transform-origin: 0 0;
+  }
+  @if $type == t {
+    &:before{
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      transform: scaleY(0.5);
+    }
+  } @else if $type == b {
+    &:after {
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      transform: scaleY(0.5);
+    }
+  } @else if $type == l {
+    &:before{
+      left: 0;
+      width: 1px;
+      height: 100%;
+      transform: scaleX(0.5);
+    }
+  } @else if $type == r {
+    &:after{
+      right: 0;
+      width: 1px;
+      height: 100%;
+      transform: scaleX(0.5);
+    }
+  }
+}

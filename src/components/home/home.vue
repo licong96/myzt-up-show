@@ -1,28 +1,44 @@
 <template lang="html">
   <section class="home">
-    <header class="header">
-      <mu-appbar title="首页">
-        <mu-icon-button icon="search" slot="left"/>
-        <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
-      </mu-appbar>
-    </header>
-    <!-- 轮播图 -->
-    <section id="slider" class="swipe" ref="swipes">
-      <div class="swipe-wrap">
-        <div class="item" v-for="item in swipeImg"><img class="item-img" :src="item"></div>
-      </div>
-      <div class="desc">
-        <span class="current" v-for="(item, index) in swipeImg.length" :class="{active: currentIndex===index}"></span>
-      </div>
-    </section>
-    <!-- 左右滑动筛选 -->
-    <section class="filtrate" ref="scroll">
-      <mu-divider />
-      <ul class="label-wrap" ref="target">
-        <li class="label" v-for="item in filtrate"><mu-flat-button class="demo-flat-button">{{item}}</mu-flat-button></li>
-      </ul>
-    </section>
-    <mu-divider />
+    <div class="wrap">
+      <header class="header">
+        <mu-appbar title="首页">
+          <mu-icon-button icon="search" slot="left"/>
+          <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
+        </mu-appbar>
+      </header>
+      <!-- 轮播图 -->
+      <section id="slider" class="swipe" ref="swipes" data-slideout-ignore>
+        <div class="swipe-wrap">
+          <div class="item" v-for="item in swipeImg"><img class="item-img" :src="item"></div>
+        </div>
+        <div class="desc">
+          <span class="current" v-for="(item, index) in swipeImg.length" :class="{active: currentIndex===index}"></span>
+        </div>
+      </section>
+      <!-- 快速链接 -->
+      <section class="quick-link">
+        <mu-paper>
+          <mu-bottom-nav @change="handleChange">
+            <mu-bottom-nav-item value="upload" title="上传项目" icon="cloud_upload"/>
+            <mu-bottom-nav-item value="" title="我上传的项目" icon="cloud_done"/>
+            <mu-bottom-nav-item value="" title="我推荐的项目" icon="record_voice_over"/>
+          </mu-bottom-nav>
+        </mu-paper>
+      </section>
+      <!-- 左右滑动筛选 -->
+      <section class="filtrate" ref="scroll" data-slideout-ignore>
+        <ul class="label-wrap" ref="target">
+          <li class="label" v-for="item in filtrate"><mu-flat-button class="demo-flat-button">{{item}}</mu-flat-button></li>
+        </ul>
+      </section>
+      <!-- 项目列表 -->
+      <section class="item-wrap">
+        <my-item @select="selectLink"></my-item>
+      </section>
+    </div>
+    <!-- 详细页容器 -->
+    <router-view></router-view>
   </section>
 </template>
 
@@ -30,6 +46,7 @@
   import Swipe from 'swipejs'
   import Transform from 'css3transform'
   import AlloyTouch from 'alloytouch'
+  import MyItem from '@/base/item/item'
 
   export default {
     data () {
@@ -51,6 +68,14 @@
       }, 20)
     },
     methods: {
+      handleChange (path) {      // 快速链接
+        this.$router.push(path)
+      },
+      selectLink (item) {       // 获取列表点击事件的返回数据
+        this.$router.push({
+          path: `/home/detail/${item}`
+        })
+      },
       openSlideout () {   // 打开侧边栏导航
         window.slideNav.toggle()
       },
@@ -77,7 +102,7 @@
         let scroll = this.$refs.scroll
         Transform(target, true)
 
-        this.alloytouch = new AlloyTouch({
+        this.alloyLabel = new AlloyTouch({
           touch: scroll, // 反馈触摸的dom
           vertical: false, // 不必需，默认是true代表监听竖直方向touch
           target: target, // 运动的对象
@@ -98,13 +123,18 @@
         })
       }
     },
-    computed: {
+    components: {
+      MyItem
     }
   }
 </script>
 
 <style lang="scss" scoped>
+  @import "~common/sass/mini";
+  @import "~common/sass/colour";
+
   .home {
+    overflow: hidden;
     .swipe {
       overflow: hidden;
       visibility: hidden;
@@ -113,6 +143,7 @@
       .swipe-wrap {
         overflow: hidden;
         position: relative;
+        max-height: 118px;
         .item {
           float: left;
           width: 100%;
@@ -143,12 +174,28 @@
         }
       }
     }
+    // 快速链接
+    .quick-link {
+      padding: 15px 15px;
+      background: #fff;
+      @include border(t);
+      @include border(b);
+      .mu-buttom-item {
+        color: $color-background;
+      }
+    }
     // 可左右滑动筛选标签
     .filtrate {
       position: relative;
-      margin-top: 15px;
-      height: 36px;
+      margin-top: 10px;
+      height: 40px;
       background-color: #fff;
+      @include border(t);
+      @include border(b);
+      .mu-flat-button {
+        height: 40px;
+        line-height: 40px;
+      }
       .label-wrap {
         position: absolute;
         top: 0;
@@ -156,8 +203,10 @@
         display: flex;
         flex-wrap: nowrap;
         .label {
+          // @include border(r);
         }
       }
     }
   }
+
 </style>

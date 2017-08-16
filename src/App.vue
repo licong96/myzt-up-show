@@ -34,7 +34,7 @@
           'padding': 250,
           'tolerance': 70
         })
-        window.slideNav.disableTouch()    // 禁止滑动打开关闭
+        // window.slideNav.disableTouch()    // 禁止滑动打开关闭
       }
     },
     components: {
