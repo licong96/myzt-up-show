@@ -11,7 +11,7 @@
               <div class="content">
                 <h3 class="title">项目标题</h3>
                 <span class="label">项目产业</span>
-                <p class="desc">项目介绍项目介绍项目介绍项目介绍项目介绍项目介绍</p>
+                <p class="desc">项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目</p>
               </div>
             </div>
             <div class="chip">
@@ -27,43 +27,17 @@
 </template>
 
 <script>
-  import Transform from 'css3transform'
-  import AlloyTouch from 'alloytouch'
-
   export default {
     mounted () {
-      this.scrollWrap()
+    },
+    created () {
     },
     methods: {
       selectItem (item) {    // 配发事件，实现路由跳转，返回自身数据
         this.$emit('select', item)
-      },
-      scrollWrap () {
-        // let self = this
-        let touch = this.$refs.touch
-        let target = this.$refs.target
-        Transform(target, true)
-
-        this.alloyTouch = new AlloyTouch({
-          touch: touch, // 反馈触摸的dom
-          vertical: true, // 不必需，默认是true代表监听竖直方向touch
-          target: target, // 运动的对象
-          property: 'translateY',  // 被滚动的属性
-          sensitivity: 1, // 不必需,触摸区域的灵敏度，默认值为1，可以为负数
-          factor: 1,  // 不必需,默认值是1代表touch区域的1px的对应target.y的1
-          min: window.innerHeight - target.clientHeight,   // 不必需,滚动属性的最小值
-          max: 0,   // 不必需,滚动属性的最大值
-          step: 40,
-          initialValue: 0, // 初始值
-          change: function (value) {
-            console.log(target.clientHeight)
-          },
-          touchStart: function (evt, value) {
-            // 计算min高度
-            // self.min = window.innerHeight - self.target.clientHeight
-          }
-        })
       }
+    },
+    watch: {
     }
   }
 </script>
@@ -73,11 +47,7 @@
   @import "~common/sass/colour";
 
   .item-wrap {
-    position: fixed;
-    top: 319px;
-    left: 0;
-    z-index: 50;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
     .mu-list {
       padding: 0;
       background-color: $color-body-bg;
@@ -95,7 +65,7 @@
       // 图片
       .image {
         flex: 1;
-        margin-right: 15px;
+        margin-right: 12px;
         .img {
           display: block;
           width: 100%;

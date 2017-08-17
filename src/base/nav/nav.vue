@@ -35,7 +35,9 @@
     methods: {
       links (path) {      // 跳转链接
         this.close()       // 先关闭侧边栏导航
-        this.$router.push(path)
+        this.$router.push({
+          path: `/${path}`
+        })
       },
       close () {
         window.slideNav.close()

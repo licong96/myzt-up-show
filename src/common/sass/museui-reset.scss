@@ -31,7 +31,7 @@ body {
   z-index: 1;
   will-change: transform;
   background-color: $color-body-bg;
-  min-height: 100vh;
+  // min-height: 100vh;
 }
 .slideout-open,
 .slideout-open body,
@@ -69,6 +69,7 @@ body {
   }
   // 图片裁切
   .g-core-image-corp-container {
+    height: 100vh;
     background-color: #000;
   }
   .g-crop-image-box{
@@ -114,4 +115,12 @@ body {
   .mu-appbar-title {
     font-size: 16px;
   }
+}
+
+// 页面滑入动画
+.tranx-enter-active, .tranx-leave-active {
+  transition: all .3s;
+}
+.tranx-enter, .tranx-leave-to /* .fade-leave-active in below version 2.1.8 */ {
+  transform: translate3d(100%, 0, 0);
 }

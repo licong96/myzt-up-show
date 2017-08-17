@@ -2,7 +2,7 @@
   <section class="upload">
     <header class="header">
       <mu-appbar title="上传项目">
-        <mu-icon-button icon="close" slot="left"/>
+        <mu-icon-button icon="close" slot="left" @click="back"/>
         <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
       </mu-appbar>
     </header>
@@ -81,7 +81,7 @@
             <span class="desc">
               项目介绍<mu-icon value="*" class="asterisk"/>
             </span>
-            <mu-text-field label="简单介绍" type="text" labelFloat v-model="inputData.introduce" errorColor="#4caf50" multiLine :rows="3" :rowsMax="4" fullWidth />
+            <mu-text-field label="简要描写项目（30字以内）" type="text" labelFloat v-model="inputData.introduce" errorColor="#4caf50" multiLine :rows="2" :rowsMax="3" @textOverflow="introduceOverflow" :errorText="inputMsg.introduceErrorText" :maxLength="30" fullWidth />
           </li>
           <li class="info-li">
             <span class="desc">
@@ -201,10 +201,11 @@
           greement: true        // 默认同意协议书
         },
         inputMsg: {
-          linkmanErrorText: '',    // 联系人输入错误提示
-          phoneErrorText: '',      // 手机号输入错误提示
-          mailErrorText: '',       // 邮箱输入错误提示
-          wechatErrorText: ''     // 微信输入错误提示
+          linkmanErrorText: '',      // 联系人输入错误提示
+          phoneErrorText: '',       // 手机号输入错误提示
+          mailErrorText: '',        // 邮箱输入错误提示
+          wechatErrorText: '',      // 微信输入错误提示
+          introduceErrorText: ''    // 项目简介
         },
         industryList: ['互联网', '互联网金融', 'O2O', '大数据', '电子游戏', 'VR及3D打印'],    // 项目产业
         stageList: ['概念阶段', '研发中', '产品已发布', '产品已盈利', '其他'],   // 项目阶段
@@ -274,7 +275,7 @@
           }
         }, 1000)
       },
-      verifyWechat () {
+      verifyWechat () {     // 验证微信
         this.inputMsg.wechatErrorText = ''
         if (this.wechatTimer) clearTimeout(this.wechatTimer)
         this.wechatTimer = setTimeout(() => {
@@ -288,6 +289,9 @@
             this.inputMsg.wechatErrorText = ''
           }
         }, 1000)
+      },
+      introduceOverflow (isOverflow) {    // 项目介绍
+        this.inputMsg.introduceErrorText = isOverflow ? '字数已超过最大限制，请精简' : ''
       },
       open (position) {         // 打开popup
         this[position + 'Popup'] = true
@@ -311,6 +315,9 @@
       },
       openSlideout () {     // 打开侧边栏导航
         window.slideNav.toggle()
+      },
+      back() {
+        this.$router.back()
       }
     },
     computed: {

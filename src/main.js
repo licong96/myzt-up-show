@@ -13,7 +13,10 @@ Vue.use(MuseUI)
 
 Vue.config.productionTip = false
 
-window.slideNav = '全局变量'      // 全局变量用来保存侧边栏导航
+window.slideNav = null      // 全局变量用来保存侧边栏导航
+// document.addEventListener('touchmove', function (e) {
+//   e.preventDefault()
+// }, false)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

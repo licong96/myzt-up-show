@@ -1,6 +1,6 @@
 <template lang="html">
   <section class="home">
-    <div class="wrap">
+    <div class="home-scroll">
       <header class="header">
         <mu-appbar title="首页">
           <mu-icon-button icon="search" slot="left"/>
@@ -38,7 +38,9 @@
       </section>
     </div>
     <!-- 详细页容器 -->
-    <router-view></router-view>
+    <transition name="tranx">
+      <router-view></router-view>
+    </transition>
   </section>
 </template>
 
@@ -58,18 +60,29 @@
           'http://www.my930.com/sites/default/files/public/6821483582164.jpeg'
         ],
         currentIndex: 0,   // 轮播图下面的点
-        filtrate: ['标签一', '标签二', '标签三', '标签四', '标签五', '标签六', '标签七', '标签八', '标签九']
+        filtrate: ['标签一', '标签二', '标签三', '标签四', '标签五', '标签六', '标签七', '标签八', '标签九'],
+        refreshing: false,
+        trigger: null
       }
     },
     mounted () {
       setTimeout(() => {
         this.mySwipe()
         this.myTransformX()
+        // this.homeScroll()
       }, 20)
     },
     methods: {
+      refresh () {
+        this.refreshing = true
+        setTimeout(() => {
+          this.refreshing = false
+        }, 2000)
+      },
       handleChange (path) {      // 快速链接
-        this.$router.push(path)
+        this.$router.push({
+          path: `/${path}`
+        })
       },
       selectLink (item) {       // 获取列表点击事件的返回数据
         this.$router.push({
@@ -102,7 +115,7 @@
         let scroll = this.$refs.scroll
         Transform(target, true)
 
-        this.alloyLabel = new AlloyTouch({
+        this.alloytouch = new AlloyTouch({
           touch: scroll, // 反馈触摸的dom
           vertical: false, // 不必需，默认是true代表监听竖直方向touch
           target: target, // 运动的对象
@@ -134,7 +147,6 @@
   @import "~common/sass/colour";
 
   .home {
-    overflow: hidden;
     .swipe {
       overflow: hidden;
       visibility: hidden;
@@ -143,7 +155,6 @@
       .swipe-wrap {
         overflow: hidden;
         position: relative;
-        max-height: 118px;
         .item {
           float: left;
           width: 100%;
@@ -207,6 +218,9 @@
         }
       }
     }
+    // 项目列表
+    .item-wrap {
+      margin-top: 10px;
+    }
   }
-
 </style>
