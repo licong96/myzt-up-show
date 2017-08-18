@@ -96,8 +96,9 @@
     .chip {
       padding-top: 10px;
       .label {
-        margin-right: 10px;
-        padding: 3px 7px;
+        display: inline-block;
+        margin-right: 6px;
+        padding: 2px 6px;
         min-width: 70px;
         border-radius: 26px;
         background-color: #e57373;

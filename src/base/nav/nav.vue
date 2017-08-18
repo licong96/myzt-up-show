@@ -12,7 +12,7 @@
         <mu-list-item title="上传项目" @click="links('upload')">
           <mu-icon slot="left" value="cloud_upload"/>
         </mu-list-item>
-        <mu-list-item title="我上传的项目">
+        <mu-list-item title="我上传的项目" @click="links('my')">
           <mu-icon slot="left" value="cloud_done"/>
         </mu-list-item>
         <mu-list-item title="我推荐的项目">

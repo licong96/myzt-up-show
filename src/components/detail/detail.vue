@@ -8,7 +8,7 @@
         </mu-appbar>
       </header>
       <div class="image-wrap">
-        <img class="image" src="../../../static/case.jpg" ref="scaleImg">
+        <img class="image" :src="src" @load="loadImage" ref="scaleImg">
       </div>
     </div>
     <!-- 滚动区域 -->
@@ -31,15 +31,19 @@
           <span class="list">产品已发布</span>
         </mu-list-item>
         <mu-list-item class="item">
-          <span class="title">项目标签：</span>
-          <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签一</span>
-          <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签二</span>
-          <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签三</span>
+          <div class="flex-item">
+            <span class="title">项目标签：</span>
+            <div class="flex-1">
+              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签一</span>
+              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签二</span>
+              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签三</span>
+            </div>
+          </div>
         </mu-list-item>
       </section>
       <section class="img-txt">
         <p class="txt">项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况</p>
-        <img class="image" src="../../../static/case.jpg">
+        <img class="image" :src="src" @load="loadImage">
         <p class="txt">项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况况项目概况项目概况项目概况项目概况项目概况项目概况项目概况项目概况</p>
       </section>
       <section class="business">
@@ -57,42 +61,59 @@
   export default {
     data () {
       return {
+        src: '../../../static/case.jpg'
       }
     },
     created() {
     },
     mounted() {
       setTimeout(() => {
-        this.alloy()      // 页面滚动
+        this.head = this.$refs.head.clientHeight
+        this.scroller = this.$refs.scroller   // 保存全局，方便调用
+        this.alloy()      // 页面滚动，需要等资源全部加载完成再初始化
       }, 20)
     },
     methods: {
       alloy() {
-        // let self = this
-        let head = this.$refs.head          // 顶部距离
+        let self = this
+        // let head = this.$refs.head.clientHeight          // 顶部距离
         let touch = this.$refs.wrapper
-        let scroller = this.$refs.scroller   // 保存全局，方便调用
+        // let scroller = this.$refs.scroller   // 保存全局，方便调用
         let scaleImg = this.$refs.scaleImg    // 图片放大
+        let percent = 0           // 放大scale and 偏移大小 size
         // 内容高度
-        Transform(scroller, true)   // true代表关闭透视投影，因为scroller里面是有文本，防止文本在IOS中模糊
+        Transform(this.scroller, true)   // true代表关闭透视投影，因为scroller里面是有文本，防止文本在IOS中模糊
+        Transform(scaleImg)
+
         this.alloyTouch = new AlloyTouch({
           touch: touch,
           vertical: true,
-          target: scroller,
+          target: self.scroller,
           property: 'translateY',
           sensitivity: 0.8, // 不必需,触摸区域的灵敏度，默认值为1，可以为负数
-          factor: 0.6, // 不必需,表示触摸位移与被运动属性映射关系，默认值是1
-          min: window.innerHeight - scroller.clientHeight - head.clientHeight,
+          factor: 0.8, // 不必需,表示触摸位移与被运动属性映射关系，默认值是1
+          min: window.innerHeight - self.scroller.clientHeight - self.head,
           max: 0,
           change: function (value) {
-            console.log(value)
-            if (value) {
-              scaleImg
+            percent = Math.abs(value / self.head)
+            if (value > 0) {      // 下拉放大
+              percent += 1
+              scaleImg.scaleX = scaleImg.scaleY = percent
+              scaleImg.translateY = 0
+            } else {
+              percent *= 100
+              scaleImg.translateY = -percent
             }
           },
           touchStart: function () {
           }
         })
+      },
+      loadImage () {        // 图片加载完成再计算高度
+        setTimeout(() => {
+          this.head = this.$refs.head.clientHeight
+          this.alloyTouch.min = window.innerHeight - this.scroller.clientHeight - this.head
+        }, 50)
       },
       openSlideout () {     // 打开侧边栏导航
         window.slideNav.toggle()
@@ -115,6 +136,7 @@
     bottom: 0;
     left: 0;
     z-index: 99;
+    // height: 100vh;
     background-color: #fff;
     .header {
       position: relative;
@@ -183,8 +205,9 @@
         }
       }
       .label {
-        margin-right: 10px;
-        padding: 3px 7px;
+        display: inline-block;
+        margin-bottom: 6px;
+        padding: 2px 6px;
         min-width: 70px;
         border-radius: 26px;
         background-color: #e57373;
@@ -193,6 +216,13 @@
         .chip-icon {
           vertical-align: middle;
           font-size: 15px;
+        }
+      }
+      .flex-item {
+        display: flex;
+        flex-wrap: wrap;
+        .flex-1 {
+          flex: 1;
         }
       }
     }

@@ -5,7 +5,7 @@
       <slide-nav></slide-nav>
     </nav>
     <!-- 内容 -->
-    <section ref="panel">
+    <section ref="panel" class="home-scroll">
       <router-view></router-view>
     </section>
   </div>
@@ -44,4 +44,11 @@
 </script>
 
 <style lang="scss" scoped>
+  .home-scroll {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
 </style>

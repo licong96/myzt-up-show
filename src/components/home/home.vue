@@ -1,42 +1,44 @@
 <template lang="html">
   <section class="home">
-    <div class="home-scroll">
-      <header class="header">
-        <mu-appbar title="首页">
-          <mu-icon-button icon="search" slot="left"/>
-          <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
-        </mu-appbar>
-      </header>
-      <!-- 轮播图 -->
-      <section id="slider" class="swipe" ref="swipes" data-slideout-ignore>
-        <div class="swipe-wrap">
-          <div class="item" v-for="item in swipeImg"><img class="item-img" :src="item"></div>
-        </div>
-        <div class="desc">
-          <span class="current" v-for="(item, index) in swipeImg.length" :class="{active: currentIndex===index}"></span>
-        </div>
-      </section>
-      <!-- 快速链接 -->
-      <section class="quick-link">
-        <mu-paper>
-          <mu-bottom-nav @change="handleChange">
-            <mu-bottom-nav-item value="upload" title="上传项目" icon="cloud_upload"/>
-            <mu-bottom-nav-item value="" title="我上传的项目" icon="cloud_done"/>
-            <mu-bottom-nav-item value="" title="我推荐的项目" icon="record_voice_over"/>
-          </mu-bottom-nav>
-        </mu-paper>
-      </section>
-      <!-- 左右滑动筛选 -->
-      <section class="filtrate" ref="scroll" data-slideout-ignore>
-        <ul class="label-wrap" ref="target">
-          <li class="label" v-for="item in filtrate"><mu-flat-button class="demo-flat-button">{{item}}</mu-flat-button></li>
-        </ul>
-      </section>
-      <!-- 项目列表 -->
-      <section class="item-wrap">
-        <my-item @select="selectLink"></my-item>
-      </section>
-    </div>
+    <alloy-scroll class="listview" :topstop="topstop" ref="scrolls">
+      <div class="home-touch" ref="refelement">
+        <header class="header">
+          <mu-appbar title="首页">
+            <mu-icon-button icon="search" slot="left"/>
+            <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
+          </mu-appbar>
+        </header>
+        <!-- 轮播图 -->
+        <section id="slider" class="swipe" ref="swipes" data-slideout-ignore>
+          <div class="swipe-wrap">
+            <div class="item" v-for="item in swipeImg"><img class="item-img" :src="item" @load="loadImage"></div>
+          </div>
+          <div class="desc">
+            <span class="current" v-for="(item, index) in swipeImg.length" :class="{active: currentIndex===index}"></span>
+          </div>
+        </section>
+        <!-- 快速链接 -->
+        <section class="quick-link">
+          <mu-paper>
+            <mu-bottom-nav @change="handleChange">
+              <mu-bottom-nav-item value="upload" title="上传项目" icon="cloud_upload"/>
+              <mu-bottom-nav-item value="" title="我上传的项目" icon="cloud_done"/>
+              <mu-bottom-nav-item value="" title="我推荐的项目" icon="record_voice_over"/>
+            </mu-bottom-nav>
+          </mu-paper>
+        </section>
+        <!-- 左右滑动筛选 -->
+        <section class="filtrate" ref="scroll" data-slideout-ignore>
+          <ul class="label-wrap" ref="target">
+            <li class="label" v-for="item in filtrate"><mu-flat-button class="demo-flat-button">{{item}}</mu-flat-button></li>
+          </ul>
+        </section>
+        <!-- 项目列表 -->
+        <section class="item-wrap">
+          <my-item @select="selectLink"></my-item>
+        </section>
+      </div>
+    </alloy-scroll>
     <!-- 详细页容器 -->
     <transition name="tranx">
       <router-view></router-view>
@@ -49,6 +51,7 @@
   import Transform from 'css3transform'
   import AlloyTouch from 'alloytouch'
   import MyItem from '@/base/item/item'
+  import AlloyScroll from '@/base/alloyscroll/alloyscroll'
 
   export default {
     data () {
@@ -59,26 +62,22 @@
           'http://www.my930.com/sites/default/files/public/6821495528753.jpeg',
           'http://www.my930.com/sites/default/files/public/6821483582164.jpeg'
         ],
+        imgLoadOne: true,
         currentIndex: 0,   // 轮播图下面的点
         filtrate: ['标签一', '标签二', '标签三', '标签四', '标签五', '标签六', '标签七', '标签八', '标签九'],
-        refreshing: false,
-        trigger: null
+        topstop: true       // 滚动到顶部停止，别弹动了
       }
+    },
+    created () {
     },
     mounted () {
       setTimeout(() => {
         this.mySwipe()
         this.myTransformX()
-        // this.homeScroll()
+        this.$refs.scrolls.countHeight()      // 从新计算页面滚动高度
       }, 20)
     },
     methods: {
-      refresh () {
-        this.refreshing = true
-        setTimeout(() => {
-          this.refreshing = false
-        }, 2000)
-      },
       handleChange (path) {      // 快速链接
         this.$router.push({
           path: `/${path}`
@@ -110,6 +109,14 @@
           }
         })
       },
+      loadImage () {      // 轮播图片加载完成后，从新计算高度
+        if (this.imgLoadOne) {      // 只加载一次
+          this.imgLoadOne = false
+          setTimeout(() => {
+            this.$refs.scrolls.countHeight()      // 从新计算页面滚动高度
+          }, 20)
+        }
+      },
       myTransformX () {     // 滑动筛选标签
         let target = this.$refs.target
         let scroll = this.$refs.scroll
@@ -137,7 +144,8 @@
       }
     },
     components: {
-      MyItem
+      MyItem,
+      AlloyScroll
     }
   }
 </script>
@@ -146,11 +154,23 @@
   @import "~common/sass/mini";
   @import "~common/sass/colour";
 
+  .listview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
   .home {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     .swipe {
       overflow: hidden;
       visibility: hidden;
       position: relative;
+      max-height: 200px;
       background-color: #fff;
       .swipe-wrap {
         overflow: hidden;

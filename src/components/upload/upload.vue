@@ -1,185 +1,188 @@
 <template lang="html">
-  <section class="upload">
-    <header class="header">
-      <mu-appbar title="上传项目">
-        <mu-icon-button icon="close" slot="left" @click="back"/>
-        <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
-      </mu-appbar>
-    </header>
-    <!-- 上传图片 -->
-    <div class="upload-img">
-      <!-- 背景图片 -->
-      <div class="blur-bg" :style="blurBg" v-show="inputData.image"></div>
-      <mu-paper class="demo-paper" :zDepth="1">
-        <img class="show-image" :src="inputData.image" alt="" v-show="inputData.image">
-      </mu-paper>
-        <vue-core-image-upload
-          class="btn btn-primary"
-          crop-ratio="1:0.8"
-          crop="local"
-          @imageuploaded="imageuploaded"
-          @imagechanged="imagechanged"
-          @imageuploading="imageuploading"
-          @errorhandle="errorhandle"
-          :max-file-size="2097152"
-          :isXhr="true"
-          url="wxgroupapi.php?type=uploadimg"
-          text="" >
-          <mu-raised-button class="demo-raised-button" label="上传logo或者图片" icon="cloud_upload" primary />
-        </vue-core-image-upload>
-    </div>
-    <mu-divider />
-    <!-- 填写内容 -->
-    <div class="message">
-      <span class="desc"><mu-icon value="*" class="asterisk"/></span>
-      是必填项
-    </div>
-    <mu-divider />
-    <div class="fomr">
-      <!-- 个人基本信息 -->
-      <section class="basic-info">
-        <ul>
-          <li class="info-li">
-            <span class="desc">
-              联系人<mu-icon value="*" class="asterisk"/>
-            </span>
-            <mu-text-field hintText="联系人" type="text" v-model="inputData.linkman" :errorText="inputMsg.linkmanErrorText" @textOverflow="linkmanOverflow" :maxLength="5" errorColor="#4caf50" fullWidth />
-          </li>
-          <li class="info-li">
-            <span class="desc">
-              手机号<mu-icon value="*" class="asterisk"/>
-            </span>
-            <mu-text-field hintText="手机号" type="number" v-model="inputData.phone" @input="verifyPhone" :errorText="inputMsg.phoneErrorText" @textOverflow="phoneOverflow" :maxLength="11" errorColor="#4caf50" fullWidth /><br/>
-          </li>
-          <li class="info-li">
-            <span class="desc">
-              邮箱号<mu-icon value="*" class="asterisk"/>
-            </span>
-            <mu-text-field hintText="邮箱号" type="email" v-model="inputData.mail" @input="verifyMail"  :errorText="inputMsg.mailErrorText" errorColor="#4caf50" fullWidth /><br/>
-          </li>
-          <li class="info-li">
-            <span class="desc">
-              微信号
-            </span>
-            <mu-text-field hintText="微信号（选填）" type="text" v-model="inputData.wechat" @input="verifyWechat" :errorText="inputMsg.wechatErrorText" errorColor="#4caf50" fullWidth /><br/>
-          </li>
-        </ul>
-      </section>
+  <alloy-scroll ref="scrolls">
+    <section class="upload">
+      <header class="header">
+        <mu-appbar title="上传项目">
+          <mu-icon-button icon="close" slot="left" @click="back"/>
+          <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
+        </mu-appbar>
+      </header>
+      <!-- 上传图片 -->
+      <div class="upload-img">
+        <!-- 背景图片 -->
+        <div class="blur-bg" :style="blurBg" v-show="inputData.image"></div>
+        <mu-paper class="demo-paper" :zDepth="1">
+          <img class="show-image" :src="inputData.image" alt="" v-show="inputData.image">
+        </mu-paper>
+          <vue-core-image-upload
+            class="btn btn-primary"
+            crop-ratio="1:0.8"
+            crop="local"
+            @imageuploaded="imageuploaded"
+            @imagechanged="imagechanged"
+            @imageuploading="imageuploading"
+            @errorhandle="errorhandle"
+            :max-file-size="2097152"
+            :isXhr="true"
+            url="wxgroupapi.php?type=uploadimg"
+            text="" >
+            <mu-raised-button class="demo-raised-button" label="上传logo或者图片" icon="cloud_upload" primary />
+          </vue-core-image-upload>
+      </div>
       <mu-divider />
-      <div class="message"></div>
+      <!-- 填写内容 -->
+      <div class="message">
+        <span class="desc"><mu-icon value="*" class="asterisk"/></span>
+        是必填项
+      </div>
       <mu-divider />
-      <!-- 项目信息 -->
-      <section class="item-info">
-        <ul>
-          <li class="info-li">
-            <span class="desc">
-              项目名称<mu-icon value="*" class="asterisk"/>
-            </span>
-            <mu-text-field hintText="项目名称" type="text" v-model="inputData.name" errorColor="#4caf50" fullWidth />
-          </li>
-          <li class="info-li">
-            <span class="desc">
-              项目介绍<mu-icon value="*" class="asterisk"/>
-            </span>
-            <mu-text-field label="简要描写项目（30字以内）" type="text" labelFloat v-model="inputData.introduce" errorColor="#4caf50" multiLine :rows="2" :rowsMax="3" @textOverflow="introduceOverflow" :errorText="inputMsg.introduceErrorText" :maxLength="30" fullWidth />
-          </li>
-          <li class="info-li">
-            <span class="desc">
-              项目产业<mu-icon value="*" class="asterisk"/>
-            </span>
-            <div class="flex-1">
-              <mu-select-field v-model="inputData.industry" :labelFocusClass="['label-foucs']" label="选择项目产业" :maxHeight="300">
-                <mu-menu-item v-for="(text, index) in industryList" :key="index" :value="index" :title="text" />
-              </mu-select-field>
-            </div>
-          </li>
-          <li class="info-li">
-            <span class="desc">
-              项目阶段<mu-icon value="*" class="asterisk"/>
-            </span>
-            <div class="flex-1">
-              <mu-select-field v-model="inputData.stage" :labelFocusClass="['label-foucs']" label="选择项目阶段" :maxHeight="300">
-                <mu-menu-item v-for="(text, index) in stageList" :key="index" :value="index" :title="text" />
-              </mu-select-field>
-            </div>
-          </li>
-          <li class="info-li">
-            <span class="desc">
-              项目标签<mu-icon value="*" class="asterisk"/>
-            </span>
-            <div class="flex-1">
-              <!-- <mu-chip class="demo-chip"></mu-chip> -->
-              <mu-checkbox name="group" nativeValue="value1" v-model="inputData.label" label="标签一" class="demo-checkbox"/>
-              <mu-checkbox name="group" nativeValue="value2" v-model="inputData.label" label="标签二" class="demo-checkbox"/>
-              <mu-checkbox name="group" nativeValue="value3" v-model="inputData.label" label="标签三" class="demo-checkbox"/>
-              <mu-checkbox name="group" nativeValue="value4" v-model="inputData.label" label="标签四" class="demo-checkbox"/>
-              <mu-checkbox name="group" nativeValue="value5" v-model="inputData.label" label="标签五" class="demo-checkbox"/>
-            </div>
-          </li>
-        </ul>
-      </section>
-      <mu-divider />
-      <div class="message"></div>
-      <mu-divider />
-      <!-- 地区，项目概况 -->
-      <section class="last-info">
-        <ul>
-          <li class="flex-li">
-            <span class="desc">
-              所在城市<mu-icon value="*" class="asterisk"/>
-            </span>
-            <div class="flex-1 city">
-              <mu-flat-button @click="open('bottom')" class="demo-flat-button" icon="place" primary>
-                {{inputData.cityvalue}}
-              </mu-flat-button>
+      <div class="fomr">
+        <!-- 个人基本信息 -->
+        <section class="basic-info">
+          <ul>
+            <li class="info-li">
+              <span class="desc">
+                联系人<mu-icon value="*" class="asterisk"/>
+              </span>
+              <mu-text-field hintText="联系人" type="text" v-model="inputData.linkman" :errorText="inputMsg.linkmanErrorText" @textOverflow="linkmanOverflow" :maxLength="5" errorColor="#4caf50" fullWidth />
+            </li>
+            <li class="info-li">
+              <span class="desc">
+                手机号<mu-icon value="*" class="asterisk"/>
+              </span>
+              <mu-text-field hintText="手机号" type="number" v-model="inputData.phone" @input="verifyPhone" :errorText="inputMsg.phoneErrorText" @textOverflow="phoneOverflow" :maxLength="11" errorColor="#4caf50" fullWidth /><br/>
+            </li>
+            <li class="info-li">
+              <span class="desc">
+                邮箱号<mu-icon value="*" class="asterisk"/>
+              </span>
+              <mu-text-field hintText="邮箱号" type="email" v-model="inputData.mail" @input="verifyMail"  :errorText="inputMsg.mailErrorText" errorColor="#4caf50" fullWidth /><br/>
+            </li>
+            <li class="info-li">
+              <span class="desc">
+                微信号
+              </span>
+              <mu-text-field hintText="微信号（选填）" type="text" v-model="inputData.wechat" @input="verifyWechat" :errorText="inputMsg.wechatErrorText" errorColor="#4caf50" fullWidth /><br/>
+            </li>
+          </ul>
+        </section>
+        <mu-divider />
+        <div class="message"></div>
+        <mu-divider />
+        <!-- 项目信息 -->
+        <section class="item-info">
+          <ul>
+            <li class="info-li">
+              <span class="desc">
+                项目名称<mu-icon value="*" class="asterisk"/>
+              </span>
+              <mu-text-field hintText="项目名称" type="text" v-model="inputData.name" errorColor="#4caf50" fullWidth />
+            </li>
+            <li class="info-li">
+              <span class="desc">
+                项目介绍<mu-icon value="*" class="asterisk"/>
+              </span>
+              <mu-text-field label="简要描写项目（30字以内）" type="text" labelFloat v-model="inputData.introduce" errorColor="#4caf50" multiLine :rows="2" :rowsMax="3" @textOverflow="introduceOverflow" :errorText="inputMsg.introduceErrorText" :maxLength="30" fullWidth />
+            </li>
+            <li class="info-li">
+              <span class="desc">
+                项目产业<mu-icon value="*" class="asterisk"/>
+              </span>
+              <div class="flex-1">
+                <mu-select-field v-model="inputData.industry" :labelFocusClass="['label-foucs']" label="选择项目产业" :maxHeight="300">
+                  <mu-menu-item v-for="(text, index) in industryList" :key="index" :value="index" :title="text" />
+                </mu-select-field>
+              </div>
+            </li>
+            <li class="info-li">
+              <span class="desc">
+                项目阶段<mu-icon value="*" class="asterisk"/>
+              </span>
+              <div class="flex-1">
+                <mu-select-field v-model="inputData.stage" :labelFocusClass="['label-foucs']" label="选择项目阶段" :maxHeight="300">
+                  <mu-menu-item v-for="(text, index) in stageList" :key="index" :value="index" :title="text" />
+                </mu-select-field>
+              </div>
+            </li>
+            <li class="info-li">
+              <span class="desc">
+                项目标签<mu-icon value="*" class="asterisk"/>
+              </span>
+              <div class="flex-1">
+                <!-- <mu-chip class="demo-chip"></mu-chip> -->
+                <mu-checkbox name="group" nativeValue="value1" v-model="inputData.label" label="标签一" class="demo-checkbox"/>
+                <mu-checkbox name="group" nativeValue="value2" v-model="inputData.label" label="标签二" class="demo-checkbox"/>
+                <mu-checkbox name="group" nativeValue="value3" v-model="inputData.label" label="标签三" class="demo-checkbox"/>
+                <mu-checkbox name="group" nativeValue="value4" v-model="inputData.label" label="标签四" class="demo-checkbox"/>
+                <mu-checkbox name="group" nativeValue="value5" v-model="inputData.label" label="标签五" class="demo-checkbox"/>
+              </div>
+            </li>
+          </ul>
+        </section>
+        <mu-divider />
+        <div class="message"></div>
+        <mu-divider />
+        <!-- 地区，项目概况 -->
+        <section class="last-info">
+          <ul>
+            <li class="flex-li">
+              <span class="desc">
+                所在城市<mu-icon value="*" class="asterisk"/>
+              </span>
+              <div class="flex-1 city">
+                <mu-flat-button @click="open('bottom')" class="demo-flat-button" icon="place" primary>
+                  {{inputData.cityvalue}}
+                </mu-flat-button>
+                <mu-divider />
+              </div>
+            </li>
+            <li class="general">
+              <span class="desc">
+                项目概况<mu-icon value="*" class="asterisk"/>
+              </span>
               <mu-divider />
-            </div>
-          </li>
-          <li class="general">
-            <span class="desc">
-              项目概况<mu-icon value="*" class="asterisk"/>
-            </span>
-            <mu-divider />
-            <mu-text-field label="项目概况" type="text" labelFloat v-model="inputData.general" errorColor="#4caf50" multiLine :rows="6" :rowsMax="6" fullWidth />
-          </li>
-          <li class="flex-li">
-            <span class="desc">
-              商业计划书
-            </span>
-            <mu-raised-button class="demo-raised-button" label="选择文件" icon="cloud_upload" primary>
-              <input type="file" class="file-button">
-            </mu-raised-button>
-          </li>
-        </ul>
-      </section>
-      <mu-divider />
-      <!-- 同意协议，并且提交 -->
-      <section class="food-btn">
-        <div class="consent">
-          <mu-checkbox label="我已阅读并且同意" class="demo-checkbox" :value="inputData.greement" />
-          <span class="open-link">《协议》</span>
-        </div>
-        <div class="submit">
-          <mu-raised-button class="demo-raised-button" label="提交" primary/>
-        </div>
-      </section>
-    </div>
-    <!-- 选择地区 -->
-    <mu-popup position="bottom" popupClass="demo-popup-bottom" :open="bottomPopup" @close="close('bottom')">
-      <mu-appbar title="滑动选择城市" class="set-header">
-        <mu-flat-button slot="right" label="确定" color="white" @click="close('bottom')"/>
-      </mu-appbar>
-      <mu-content-block>
-        <div class="demo-picker-container">
-          <mu-picker :slots="addressSlots" :visible-item-count="5" @change="addressChange" :values="address"/>
-        </div>
-      </mu-content-block>
-    </mu-popup>
-  </section>
+              <mu-text-field label="项目概况" type="text" labelFloat v-model="inputData.general" errorColor="#4caf50" multiLine :rows="6" :rowsMax="6" fullWidth />
+            </li>
+            <li class="flex-li">
+              <span class="desc">
+                商业计划书
+              </span>
+              <mu-raised-button class="demo-raised-button" label="选择文件" icon="cloud_upload" primary>
+                <input type="file" class="file-button">
+              </mu-raised-button>
+            </li>
+          </ul>
+        </section>
+        <mu-divider />
+        <!-- 同意协议，并且提交 -->
+        <section class="food-btn">
+          <div class="consent">
+            <mu-checkbox label="我已阅读并且同意" class="demo-checkbox" :value="inputData.greement" />
+            <span class="open-link">《协议》</span>
+          </div>
+          <div class="submit">
+            <mu-raised-button class="demo-raised-button" label="提交" primary/>
+          </div>
+        </section>
+      </div>
+      <!-- 选择地区 -->
+      <mu-popup position="bottom" popupClass="demo-popup-bottom" :open="bottomPopup" @close="close('bottom')">
+        <mu-appbar title="滑动选择城市" class="set-header">
+          <mu-flat-button slot="right" label="确定" color="white" @click="close('bottom')"/>
+        </mu-appbar>
+        <mu-content-block>
+          <div class="demo-picker-container">
+            <mu-picker :slots="addressSlots" :visible-item-count="5" @change="addressChange" :values="address"/>
+          </div>
+        </mu-content-block>
+      </mu-popup>
+    </section>
+  </alloy-scroll>
 </template>
 
 <script>
   import VueCoreImageUpload from 'vue-core-image-upload'
+  import AlloyScroll from '@/base/alloyscroll/alloyscroll'
   import {address} from '@/common/js/city'
 
   export default {
@@ -334,7 +337,8 @@
       }
     },
     components: {
-      VueCoreImageUpload
+      VueCoreImageUpload,
+      AlloyScroll
     }
   }
 </script>
