@@ -118,6 +118,17 @@ body {
   }
 }
 
+// 我上传的
+.my-item {
+  .mu-card-title-container .mu-card-title {
+    font-size: 18px;
+    line-height: 30px;
+  }
+  .mu-card-text {
+    padding: 0 16px;
+  }
+}
+
 // 页面滑入动画
 .tranx-enter-active, .tranx-leave-active {
   transition: all .3s;

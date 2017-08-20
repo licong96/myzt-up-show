@@ -44,17 +44,29 @@
           factor: 0.8, // 不必需,表示触摸位移与被运动属性映射关系，默认值是1
           min: window.innerHeight - self.targe.clientHeight - this.scrollHead,
           max: 0,
+          step: 45,
           change: function (value) {
             if (self.scrollValue) {     // 返回滚动位置
               self.$emit('scroll', value)
+            }
+            if (!value && value !== 0) {
+              console.log('糟了，是NaN')
+              location.reload()
+              return false
             }
           },
           touchStart: function () {
           }
         })
       },
-      countHeight () {        // 图片加载完成再计算高度
-        this.alloyTouch.min = window.innerHeight - this.targe.clientHeight
+      countHeight (tophead) {            // 图片加载完成再计算高度
+        this.alloyTouch.min = window.innerHeight - this.targe.clientHeight - tophead
+      },
+      stop () {                   // 停止
+        this.alloyTouch.stop()
+      },
+      to (value, time, ease) {      // 到某个位置
+        this.alloyTouch.to(value, time, ease)
       }
     },
     watch: {

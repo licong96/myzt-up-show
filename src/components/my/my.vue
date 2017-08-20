@@ -2,19 +2,30 @@
   <section class="my">
     <div class="top">
       <div class="header">
-        <mu-icon-button icon="close" slot="left"/>
+        <mu-icon-button icon="close" slot="left" @click="back"/>
         <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
       </div>
       <div class="head-color" ref="header"></div>
       <div class="user-logo-wrapper" ref="userLogo">
         <div class="user-logo">
-          <img class="img" src="http://q3.qlogo.cn/g?b=qq&k=dsIAz3gs7bWoJ8oSicpwLcw&s=100">
+          <img class="img" src="../../../static/case.jpg">
         </div>
+      </div>
+      <div class="nav-paper" ref="navPaper">
+        <mu-paper>
+          <mu-bottom-nav :value="bottomNav" shift>
+            <mu-bottom-nav-item value="myUpload" title="上传的" icon="cloud_done" to="/my/myUpload"/>
+            <mu-bottom-nav-item value="myRecommend" title="推荐的" icon="record_voice_over" to="/my/myRecommend"/>
+            <mu-bottom-nav-item value="myCollect" title="收藏的" icon="favorite" to="/my/myCollect"/>
+          </mu-bottom-nav>
+        </mu-paper>
       </div>
     </div>
     <alloy-scroll ref="scrolls" :data="list" :scroll-value="scrollValue" :scroll-head="scrollHead" @scroll="scroll">
       <div class="content">
-        <p v-for="(item, index) in list">{{index}}</p>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
       </div>
     </alloy-scroll>
   </section>
@@ -28,47 +39,76 @@
     data () {
       return {
         list: ['1', '2', '3', '3', '3', '3', '3', '3', '3', '3', '3'],
-        scrollValue: true,          // 返回滚动value
-        scrollHead: 56               // min要减去的额外高度
+        scrollValue: true,            // 返回滚动value
+        scrollHead: 56,               // min要减去的额外高度
+        bottomNav: 'myUpload'         // 导航切换，当前选中的
       }
     },
     created () {
-      this.alloyTouch = null
     },
     mounted () {
+      setTimeout(() => {
+        this.header = this.$refs.header
+        this.userLogo = this.$refs.userLogo
+        this.navPaper = this.$refs.navPaper
+        Transform(this.header)
+        Transform(this.userLogo)
+        Transform(this.navPaper, true)
+        this.headerHeight = this.header.clientHeight     // header高度
+        this.navMaxHeight = this.headerHeight - 55      // 导航上滑最大高度
+        this.scaleY = 0           // 缩放大小
+        // 内容高度
+        this.header.originY = -this.headerHeight       // ransform-origin为 center top
+        this.header.translateY = -this.headerHeight    // 一半
+      })
     },
     methods: {
       scroll (value) {
-        console.log(value)
-        let header = this.$refs.header
-        let userLogo = this.$refs.userLogo
-        // 内容高度
-        Transform(header)
-        header.originY = -70        // ransform-origin为 center top
-        header.translateY = -70
-        Transform(userLogo)
-
-        // 因为上下文都在改变value的值，所以先后顺序不能变
         if (value < 0) {      // 上滑缩小
-          if (value < -140) {     // 规定最小值
-            value = -140
+          if (value < -this.headerHeight) {     // 规定最小值
+            value = -this.headerHeight
           }
-          let scaleY = (240 + value) / 240    // 计算缩小比例
-          // console.log(scaleY)
-          header.scaleY = scaleY
-          userLogo.scaleX = userLogo.scaleY = scaleY
-          userLogo.translateY = value / 1.7
+          this.scaleY = (280 + value) / 280    // 计算缩小比例
+          // console.log(this.scaleY)
+          this.header.scaleY = this.scaleY
+          this.userLogo.scaleX = this.userLogo.scaleY = this.scaleY
+          this.userLogo.translateY = value / 3.2
+          // 导航最大上滑距离
+          if (value < -this.navMaxHeight) {
+            this.navPaper.translateY = -this.navMaxHeight
+          } else {
+            this.navPaper.translateY = value
+          }
         } else {      // 下滑放大
-          let scaleY = 1 + value / 240      // 计算放大比例
-          // console.log(scaleY)
-          header.scaleY = scaleY
-          userLogo.scaleX = userLogo.scaleY = scaleY
-          userLogo.translateY = value / 1.7
+          this.scaleY = 1 + value / 240      // 计算放大比例
+          // console.log(this.scaleY)
+          this.header.scaleY = this.scaleY
+          this.userLogo.scaleX = this.userLogo.scaleY = this.scaleY
+          this.userLogo.translateY = value / 1.7
+          this.navPaper.translateY = value / 1.2
         }
       },
       openSlideout () {   // 打开侧边栏导航
         window.slideNav.toggle()
+      },
+      back() {
+        this.$router.push({
+          path: '/home'
+        })
       }
+    },
+    beforeRouteEnter (to, from, next) {       // 在渲染该组件的对应路由被 confirm 前调用
+      next(vm => {
+        vm.bottomNav = to.name
+      })
+    },
+    beforeRouteUpdate (to, from, next) {    // 在当前路由改变，但是该组件被复用时调用
+      this.bottomNav = to.name
+      next()
+      setTimeout(() => {        // 检测图片是否加载完毕，用vuex保存状态，再初始化滚动
+        this.$refs.scrolls.countHeight(this.scrollHead)
+        this.$refs.scrolls.to(0)
+      }, 50)
     },
     components: {
       AlloyScroll
@@ -81,6 +121,8 @@
   @import "~common/sass/colour";
 
   .top {
+    position: relative;
+    z-index: 2;
     .header {
       display: flex;
       justify-content: space-between;
@@ -92,7 +134,7 @@
       background-color: $color-background;
       color: #fff;
       .mu-icon-button {
-        z-index: 3;
+        z-index: 4;
       }
     }
     .head-color {
@@ -101,23 +143,23 @@
       left: 0;
       z-index: 1;
       width: 100%;
-      height: 140px;
+      height: 150px;
       background-color: $color-background;
     }
     .user-logo-wrapper {
        position: absolute;
        top: 0;
        left: 0;
-       z-index: 2;
+       z-index: 3;
        width: 100%;
        text-align: center;
        font-size: 0;
        .user-logo {
          display: inline-block;
-         margin-top: 90px;
+         margin-top: 40px;
          border: 2px solid #fff;
-         width: 100px;
-         height: 100px;
+         width: 80px;
+         height: 80px;
          border-radius: 50%;
          background-color: #ededed;
          box-sizing: border-box;
@@ -128,10 +170,26 @@
          }
        }
      }
+    .nav-paper {
+      position: absolute;
+      top: 150px;
+      left: 0;
+      width: 100%;
+      z-index: 2;
+      box-shadow: none;
+    }
+    .mu-paper {
+      box-shadow: none;
+    }
   }
   .content {
+    position: relative;
+    z-index: 1;
+    padding-top: 150px;
     p {
       height: 100px;
+      margin: 0;
+
     }
   }
 </style>

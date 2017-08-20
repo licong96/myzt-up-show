@@ -1,10 +1,10 @@
 <template lang="html">
   <section class="home">
-    <alloy-scroll class="listview" :topstop="topstop" ref="scrolls">
+    <alloy-scroll class="listview" ref="scrolls">
       <div class="home-touch" ref="refelement">
         <header class="header">
           <mu-appbar title="首页">
-            <mu-icon-button icon="search" slot="left"/>
+            <mu-icon-button icon="search" slot="left" to="/search"/>
             <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
           </mu-appbar>
         </header>
@@ -22,8 +22,8 @@
           <mu-paper>
             <mu-bottom-nav @change="handleChange">
               <mu-bottom-nav-item value="upload" title="上传项目" icon="cloud_upload"/>
-              <mu-bottom-nav-item value="" title="我上传的项目" icon="cloud_done"/>
-              <mu-bottom-nav-item value="" title="我推荐的项目" icon="record_voice_over"/>
+              <mu-bottom-nav-item value="my/myUpload" title="我上传的项目" icon="cloud_done"/>
+              <mu-bottom-nav-item value="my/myRecommend" title="我推荐的项目" icon="record_voice_over"/>
             </mu-bottom-nav>
           </mu-paper>
         </section>
@@ -64,8 +64,7 @@
         ],
         imgLoadOne: true,
         currentIndex: 0,   // 轮播图下面的点
-        filtrate: ['标签一', '标签二', '标签三', '标签四', '标签五', '标签六', '标签七', '标签八', '标签九'],
-        topstop: true       // 滚动到顶部停止，别弹动了
+        filtrate: ['标签一', '标签二', '标签三', '标签四', '标签五', '标签六', '标签七', '标签八', '标签九']
       }
     },
     created () {
@@ -74,7 +73,7 @@
       setTimeout(() => {
         this.mySwipe()
         this.myTransformX()
-        this.$refs.scrolls.countHeight()      // 从新计算页面滚动高度
+        this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
       }, 20)
     },
     methods: {
@@ -113,7 +112,7 @@
         if (this.imgLoadOne) {      // 只加载一次
           this.imgLoadOne = false
           setTimeout(() => {
-            this.$refs.scrolls.countHeight()      // 从新计算页面滚动高度
+            this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
           }, 20)
         }
       },
@@ -131,7 +130,7 @@
           factor: 1,  // 不必需,默认值是1代表touch区域的1px的对应target.y的1
           min: window.innerWidth - target.clientWidth,   // 不必需,滚动属性的最小值
           max: 0,   // 不必需,滚动属性的最大值
-          step: 40,
+          step: 45,
           initialValue: 0, // 初始值
           change: function (value) {
           },

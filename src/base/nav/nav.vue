@@ -2,8 +2,8 @@
   <section class="nav">
     <div class="wrap">
       <div class="login">
-        <mu-flat-button label="登录" class="demo-flat-button"/>
-        <mu-flat-button label="注册" class="demo-flat-button"/>
+        <mu-flat-button label="登录" class="demo-flat-button" href="http://www.my930.com/frontend/user/login"/>
+        <mu-flat-button label="注册" class="demo-flat-button" href="http://www.my930.com/frontend/user/register"/>
       </div>
       <mu-list class="mu-list">
         <mu-list-item title="首页" @click="links('home')">
@@ -12,16 +12,16 @@
         <mu-list-item title="上传项目" @click="links('upload')">
           <mu-icon slot="left" value="cloud_upload"/>
         </mu-list-item>
-        <mu-list-item title="我上传的项目" @click="links('my')">
+        <mu-list-item title="我上传的项目" @click="links('my/myUpload')">
           <mu-icon slot="left" value="cloud_done"/>
         </mu-list-item>
-        <mu-list-item title="我推荐的项目">
+        <mu-list-item title="我推荐的项目" @click="links('my/myRecommend')">
           <mu-icon slot="left" value="record_voice_over"/>
         </mu-list-item>
-        <mu-list-item title="我收藏的项目">
+        <mu-list-item title="我收藏的项目" @click="links('my/myCollect')">
           <mu-icon slot="left" value="favorite"/>
         </mu-list-item>
-        <mu-list-item title="联系我们">
+        <mu-list-item title="联系我们" href="tel://13699531996">
           <mu-icon slot="left" value="message"/>
         </mu-list-item>
       </mu-list>
@@ -59,6 +59,7 @@
       height: 56px;
       line-height: 56px;
       .mu-flat-button {
+        margin-top: 10px;
         color: #fff;
       }
     }

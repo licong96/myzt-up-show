@@ -1,5 +1,5 @@
 <template lang="html">
-  <alloy-scroll ref="scrolls">
+  <alloy-scroll ref="scrolls" :scroll-value="scrollValue" @scroll="scroll">
     <section class="upload">
       <header class="header">
         <mu-appbar title="上传项目">
@@ -14,20 +14,21 @@
         <mu-paper class="demo-paper" :zDepth="1">
           <img class="show-image" :src="inputData.image" alt="" v-show="inputData.image">
         </mu-paper>
-          <vue-core-image-upload
-            class="btn btn-primary"
-            crop-ratio="1:0.8"
-            crop="local"
-            @imageuploaded="imageuploaded"
-            @imagechanged="imagechanged"
-            @imageuploading="imageuploading"
-            @errorhandle="errorhandle"
-            :max-file-size="2097152"
-            :isXhr="true"
-            url="wxgroupapi.php?type=uploadimg"
-            text="" >
-            <mu-raised-button class="demo-raised-button" label="上传logo或者图片" icon="cloud_upload" primary />
-          </vue-core-image-upload>
+        <vue-core-image-upload
+          class="btn btn-primary"
+          crop-ratio="1:0.8"
+          crop="local"
+          :cropBtn="{'ok': '确定', 'cancel': '取消'}"
+          @imageuploaded="imageuploaded"
+          @imagechanged="imagechanged"
+          @imageuploading="imageuploading"
+          @errorhandle="errorhandle"
+          :max-file-size="2097152"
+          :isXhr="true"
+          url="wxgroupapi.php?type=uploadimg"
+          text="">
+          <mu-raised-button class="demo-raised-button" label="上传logo或者图片" icon="cloud_upload" primary />
+        </vue-core-image-upload>
       </div>
       <mu-divider />
       <!-- 填写内容 -->
@@ -184,6 +185,7 @@
   import VueCoreImageUpload from 'vue-core-image-upload'
   import AlloyScroll from '@/base/alloyscroll/alloyscroll'
   import {address} from '@/common/js/city'
+  import Transform from 'css3transform'
 
   export default {
     data() {
@@ -226,12 +228,15 @@
         ],
         address: ['北京', '北京'],
         addressProvince: '北京',
-        addressCity: '北京'
+        addressCity: '北京',
+        scrollValue: true         // 传给滚动页面，返回value
       }
     },
     created() {
     },
     mounted() {
+      setTimeout(() => {
+      }, 20)
     },
     methods: {
       imageuploaded (res) {   // 图片上传裁切
@@ -240,6 +245,7 @@
         }
       },
       imagechanged (res) {
+        this.$refs.scrolls.to(0, 0)          // 滑动回到 0
         this.inputData.image = res
       },
       imageuploading () {
@@ -247,6 +253,11 @@
       },
       errorhandle (res) {
         alert('图片不能超过2M', res, 'error')
+      },
+      scroll (value) {        // 图片裁切页的滑动距离和页面保持一致
+        let core = document.getElementsByClassName('g-core-image-corp-container')[0]
+        Transform(core, true)
+        core.translateY = -value
       },
       linkmanOverflow (isOverflow) {    // 联系人验证
         this.inputMsg.linkmanErrorText = isOverflow ? '这个名字不靠谱' : ''
