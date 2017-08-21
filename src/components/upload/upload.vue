@@ -87,7 +87,7 @@
             </li>
             <li class="info-li">
               <span class="desc">
-                项目产业<mu-icon value="*" class="asterisk"/>
+                项目分类<mu-icon value="*" class="asterisk"/>
               </span>
               <div class="flex-1">
                 <mu-select-field v-model="inputData.industry" :labelFocusClass="['label-foucs']" label="选择项目产业" :maxHeight="300">
@@ -105,19 +105,16 @@
                 </mu-select-field>
               </div>
             </li>
-            <li class="info-li">
+            <!-- <li class="info-li">
               <span class="desc">
                 项目标签<mu-icon value="*" class="asterisk"/>
               </span>
               <div class="flex-1">
-                <!-- <mu-chip class="demo-chip"></mu-chip> -->
                 <mu-checkbox name="group" nativeValue="value1" v-model="inputData.label" label="标签一" class="demo-checkbox"/>
                 <mu-checkbox name="group" nativeValue="value2" v-model="inputData.label" label="标签二" class="demo-checkbox"/>
                 <mu-checkbox name="group" nativeValue="value3" v-model="inputData.label" label="标签三" class="demo-checkbox"/>
-                <mu-checkbox name="group" nativeValue="value4" v-model="inputData.label" label="标签四" class="demo-checkbox"/>
-                <mu-checkbox name="group" nativeValue="value5" v-model="inputData.label" label="标签五" class="demo-checkbox"/>
               </div>
-            </li>
+            </li> -->
           </ul>
         </section>
         <mu-divider />

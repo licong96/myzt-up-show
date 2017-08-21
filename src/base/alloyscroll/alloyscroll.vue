@@ -52,7 +52,6 @@
             if (!value && value !== 0) {
               console.log('糟了，是NaN')
               location.reload()
-              return false
             }
           },
           touchStart: function () {

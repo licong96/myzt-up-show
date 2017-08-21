@@ -23,7 +23,7 @@
             <mu-bottom-nav @change="handleChange">
               <mu-bottom-nav-item value="upload" title="上传项目" icon="cloud_upload"/>
               <mu-bottom-nav-item value="my/myUpload" title="我上传的项目" icon="cloud_done"/>
-              <mu-bottom-nav-item value="my/myRecommend" title="我推荐的项目" icon="record_voice_over"/>
+              <mu-bottom-nav-item value="my/myRecommend" title="我关注的项目" icon="star"/>
             </mu-bottom-nav>
           </mu-paper>
         </section>
@@ -64,7 +64,7 @@
         ],
         imgLoadOne: true,
         currentIndex: 0,   // 轮播图下面的点
-        filtrate: ['标签一', '标签二', '标签三', '标签四', '标签五', '标签六', '标签七', '标签八', '标签九']
+        filtrate: ['互联网', '互联网金融', 'O2O', '大数据', '电子游戏', 'VR及3D打印']
       }
     },
     created () {

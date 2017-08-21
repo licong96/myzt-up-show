@@ -15,8 +15,8 @@
         <mu-list-item title="我上传的项目" @click="links('my/myUpload')">
           <mu-icon slot="left" value="cloud_done"/>
         </mu-list-item>
-        <mu-list-item title="我推荐的项目" @click="links('my/myRecommend')">
-          <mu-icon slot="left" value="record_voice_over"/>
+        <mu-list-item title="我关注的项目" @click="links('my/myRecommend')">
+          <mu-icon slot="left" value="star"/>
         </mu-list-item>
         <mu-list-item title="我收藏的项目" @click="links('my/myCollect')">
           <mu-icon slot="left" value="favorite"/>

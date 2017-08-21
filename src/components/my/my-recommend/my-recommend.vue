@@ -1,9 +1,6 @@
 <template lang="html">
   <section class="my-recommend">
-    <my-recommend-item></my-recommend-item>
-    <transition name="tranx">
-      <router-view></router-view>
-    </transition>
+    <my-recommend-item @select="selectLink"></my-recommend-item>
   </section>
 </template>
 
@@ -13,10 +10,10 @@
     mounted () {
       // 检测图片是否加载完毕，用vuex保存状态，再初始化滚动
     },
-    mothods: {
-      select (item) {       // 获取列表点击事件的返回数据
+    methods: {
+      selectLink (item) {       // 获取列表点击事件的返回数据
         this.$router.push({
-          path: `/my/myRecommend/detail/${item}`
+          path: `/my/item/${item}`
         })
       }
     },

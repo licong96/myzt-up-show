@@ -15,7 +15,7 @@
         <mu-paper>
           <mu-bottom-nav :value="bottomNav" shift>
             <mu-bottom-nav-item value="myUpload" title="上传的" icon="cloud_done" to="/my/myUpload"/>
-            <mu-bottom-nav-item value="myRecommend" title="推荐的" icon="record_voice_over" to="/my/myRecommend"/>
+            <mu-bottom-nav-item value="myRecommend" title="关注的" icon="star" to="/my/myRecommend"/>
             <mu-bottom-nav-item value="myCollect" title="收藏的" icon="favorite" to="/my/myCollect"/>
           </mu-bottom-nav>
         </mu-paper>
@@ -72,7 +72,7 @@
           // console.log(this.scaleY)
           this.header.scaleY = this.scaleY
           this.userLogo.scaleX = this.userLogo.scaleY = this.scaleY
-          this.userLogo.translateY = value / 3.2
+          this.userLogo.translateY = value / 3.4
           // 导航最大上滑距离
           if (value < -this.navMaxHeight) {
             this.navPaper.translateY = -this.navMaxHeight
@@ -105,9 +105,9 @@
     beforeRouteUpdate (to, from, next) {    // 在当前路由改变，但是该组件被复用时调用
       this.bottomNav = to.name
       next()
-      setTimeout(() => {        // 检测图片是否加载完毕，用vuex保存状态，再初始化滚动
-        this.$refs.scrolls.countHeight(this.scrollHead)
+      setTimeout(() => {        // 检测图片是否加载完毕，用vuex保存状态，再初始化滚动，这是临时的
         this.$refs.scrolls.to(0)
+        this.$refs.scrolls.countHeight(this.scrollHead)
       }, 50)
     },
     components: {
@@ -143,7 +143,7 @@
       left: 0;
       z-index: 1;
       width: 100%;
-      height: 150px;
+      height: 152px;
       background-color: $color-background;
     }
     .user-logo-wrapper {

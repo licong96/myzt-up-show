@@ -136,3 +136,9 @@ body {
 .tranx-enter, .tranx-leave-to /* .fade-leave-active in below version 2.1.8 */ {
   transform: translate3d(100%, 0, 0);
 }
+// .opacity-enter-active, .opacity-leave-active {
+//   transition: all .2s;
+// }
+// .opacity-enter, .opacity-leave-to {
+//   opacity: .5;
+// }

@@ -10,14 +10,12 @@
               </div>
               <div class="content">
                 <h3 class="title">项目标题</h3>
-                <span class="label">项目产业</span>
-                <p class="desc">项目项目项目项目项目项目项目项目项目项目项目项目项目项目项目</p>
+                <span class="label">项目阶段</span>
+                <p class="desc">中岁颇好道，晚家南山陲。兴来每独往，胜事空自知。</p>
               </div>
             </div>
             <div class="chip">
-              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签一</span>
-              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签二</span>
-              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签三</span>
+              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>互联网</span>
             </div>
           </mu-list-item>
         </div>

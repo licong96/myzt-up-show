@@ -45,13 +45,7 @@ export default new Router({
         {
           path: 'myUpload',
           name: 'myUpload',
-          component: myUpload,
-          children: [
-            {
-              path: 'detail/:id',
-              component: detail
-            }
-          ]
+          component: myUpload
         },
         {
           path: 'myRecommend',
@@ -64,6 +58,11 @@ export default new Router({
           component: myCollect
         }
       ]
+    },
+    {
+      path: '/my/item/:id',     // 我的列表详细页
+      name: 'myitem',
+      component: detail
     }
   ]
 })
