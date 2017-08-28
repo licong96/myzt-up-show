@@ -51,19 +51,19 @@
               <span class="desc">
                 手机号<mu-icon value="*" class="asterisk"/>
               </span>
-              <mu-text-field hintText="手机号" type="number" v-model="inputData.phone" @input="verifyPhone" :errorText="inputMsg.phoneErrorText" @textOverflow="phoneOverflow" :maxLength="11" errorColor="#4caf50" fullWidth /><br/>
+              <mu-text-field hintText="手机号" type="number" v-model="inputData.phone" @input="verifyPhone" :errorText="inputMsg.phoneErrorText" @textOverflow="phoneOverflow" :maxLength="11" errorColor="#4caf50" fullWidth />
             </li>
             <li class="info-li">
               <span class="desc">
                 邮箱号<mu-icon value="*" class="asterisk"/>
               </span>
-              <mu-text-field hintText="邮箱号" type="email" v-model="inputData.mail" @input="verifyMail"  :errorText="inputMsg.mailErrorText" errorColor="#4caf50" fullWidth /><br/>
+              <mu-text-field hintText="邮箱号" type="email" v-model="inputData.mail" @input="verifyMail"  :errorText="inputMsg.mailErrorText" errorColor="#4caf50" fullWidth />
             </li>
             <li class="info-li">
               <span class="desc">
                 微信号
               </span>
-              <mu-text-field hintText="微信号（选填）" type="text" v-model="inputData.wechat" @input="verifyWechat" :errorText="inputMsg.wechatErrorText" errorColor="#4caf50" fullWidth /><br/>
+              <mu-text-field hintText="微信号（选填）" type="text" v-model="inputData.wechat" @input="verifyWechat" :errorText="inputMsg.wechatErrorText" errorColor="#4caf50" fullWidth />
             </li>
           </ul>
         </section>

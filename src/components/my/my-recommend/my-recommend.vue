@@ -13,7 +13,7 @@
     methods: {
       selectLink (item) {       // 获取列表点击事件的返回数据
         this.$router.push({
-          path: `/my/item/${item}`
+          path: `/my/detail/${item}`
         })
       }
     },

@@ -2,8 +2,8 @@
   <section class="nav">
     <div class="wrap">
       <div class="login">
-        <mu-flat-button label="登录" class="demo-flat-button" href="http://www.my930.com/frontend/user/login"/>
-        <mu-flat-button label="注册" class="demo-flat-button" href="http://www.my930.com/frontend/user/register"/>
+        <mu-flat-button label="登录" class="demo-flat-button" @click="links('home/account/login')"/>
+        <mu-flat-button label="注册" class="demo-flat-button" @click="links('home/account/register')"/>
       </div>
       <mu-list class="mu-list">
         <mu-list-item title="首页" @click="links('home')">

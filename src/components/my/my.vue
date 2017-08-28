@@ -24,10 +24,14 @@
     <alloy-scroll ref="scrolls" :data="list" :scroll-value="scrollValue" :scroll-head="scrollHead" @scroll="scroll">
       <div class="content">
         <keep-alive>
-          <router-view></router-view>
+          <router-view name="list"></router-view>
         </keep-alive>
       </div>
     </alloy-scroll>
+    <!-- 详细页命名视图 -->
+    <transition name="tranx">
+      <router-view name="detail"></router-view>
+    </transition>
   </section>
 </template>
 
@@ -105,6 +109,12 @@
     beforeRouteUpdate (to, from, next) {    // 在当前路由改变，但是该组件被复用时调用
       this.bottomNav = to.name
       next()
+      if (to.name === 'myDetail') {   // 打开详细页不执行
+        return false
+      }
+      if (from.name === 'myDetail') {
+        return false
+      }
       setTimeout(() => {        // 检测图片是否加载完毕，用vuex保存状态，再初始化滚动，这是临时的
         this.$refs.scrolls.to(0)
         this.$refs.scrolls.countHeight(this.scrollHead)

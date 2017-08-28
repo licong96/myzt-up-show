@@ -49,9 +49,10 @@
             if (self.scrollValue) {     // 返回滚动位置
               self.$emit('scroll', value)
             }
-            if (!value && value !== 0) {
+            if (!value && value !== 0) {      // 如果是NaN那么就从新执行
               console.log('糟了，是NaN')
-              location.reload()
+              // location.reload()
+              self.alloy()
             }
           },
           touchStart: function () {
