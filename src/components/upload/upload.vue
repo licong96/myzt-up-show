@@ -3,7 +3,7 @@
     <section class="upload">
       <header class="header">
         <mu-appbar title="上传项目">
-          <mu-icon-button icon="close" slot="left" @click="back"/>
+          <mu-icon-button icon="arrow_back" slot="left" @click="back"/>
           <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
         </mu-appbar>
       </header>

@@ -8,10 +8,10 @@
     <article class="main">
       <mobile-tear-sheet>
         <mu-list>
-          <mu-list-item class="border-b" title="我要投资/查看项目(投资人/一般产业人员)">
+          <mu-list-item class="border-b" title="我要投资/查看项目(投资人)">
             <mu-icon slot="right" value="keyboard_arrow_right"/>
           </mu-list-item>
-          <mu-list-item class="border-b" title="我要领头项目(投资经理/领头机构)">
+          <mu-list-item class="border-b" title="我要领头项目(投资经理)">
             <mu-icon slot="right" value="keyboard_arrow_right"/>
           </mu-list-item>
           <mu-list-item class="border-b" title="我要融资(创业者)">

@@ -3,7 +3,7 @@
     <div class="top">
       <div class="header">
         <mu-icon-button icon="close" slot="left" @click="back"/>
-        <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
+        <mu-icon-button icon="settings" slot="right" @click="openSlideout"/>
       </div>
       <div class="head-color" ref="header"></div>
       <div class="user-logo-wrapper" ref="userLogo">

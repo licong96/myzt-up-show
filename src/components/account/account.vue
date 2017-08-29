@@ -2,7 +2,7 @@
   <section class="account">
     <div class="top">
       <div class="header">
-        <mu-icon-button icon="close" slot="left" @click="back"/>
+        <mu-icon-button icon="arrow_back" slot="left" @click="back"/>
         <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
       </div>
       <div class="logo">
