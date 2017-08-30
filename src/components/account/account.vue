@@ -16,16 +16,19 @@
       </mu-paper>
     </div>
     <div class="content">
-      <transition name="trany" mode="out-in">
-        <keep-alive>
-          <router-view></router-view>
-        </keep-alive>
-      </transition>
+      <alloy-scroll class="listview" ref="scrolls">
+        <transition name="trany" mode="out-in">
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
+        </transition>
+      </alloy-scroll>
     </div>
   </section>
 </template>
 
 <script>
+  import AlloyScroll from '@/base/alloyscroll/alloyscroll'
   export default {
     data () {
       return {
@@ -33,6 +36,11 @@
         backGo: 1,                // 记录要返回的次数，我想关闭本页面
         bottomNavColor: 'movies'
       }
+    },
+    mounted() {
+      setTimeout(() => {
+        this.$refs.scrolls.countHeight(40)      // 从新计算页面滚动高度
+      }, 20)
     },
     methods: {
       handleChange (val) {
@@ -59,6 +67,9 @@
         this.backGo++     // 累加要返回的次数
       }
       next()
+    },
+    components: {
+      AlloyScroll
     }
   }
 </script>

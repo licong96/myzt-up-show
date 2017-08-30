@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import MuseUI from 'muse-ui'
-import fastclick from 'fastclick'
+// import fastclick from 'fastclick'
 import axios from 'axios'
 
 import '@/common/css/normalize.css'
@@ -19,7 +19,7 @@ Vue.config.productionTip = false
 
 if ('addEventListener' in document) {    // 取消移动端点击事件延迟
   document.addEventListener('DOMContentLoaded', function() {
-    fastclick.attach(document.body)
+    // fastclick.attach(document.body)
   }, false)
 }
 
