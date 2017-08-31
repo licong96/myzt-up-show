@@ -129,6 +129,24 @@ body {
   }
 }
 
+// 注册-急验证
+.geetest_wind.geetest_panel .geetest_panel_box .geetest_panel_success {
+  height: 110px !important;     // 小心! important is very terrible
+}
+.geetest_wind.geetest_panel .geetest_panel_box .geetest_panel_loading {
+  height: 110px !important;     // 小心! important is very terrible
+}
+.progress {
+  text-align: center;
+}
+.mu-dialog-actions {
+  min-height: auto;
+  padding: 0;
+  .mu-flat-button-primary {
+    margin: 8px;
+  }
+}
+
 // 身份认证页
 
 // 页面滑入动画

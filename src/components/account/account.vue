@@ -1,5 +1,6 @@
 <template lang="html">
   <section class="account">
+    <alloy-scroll class="listview" ref="scrolls">
     <div class="top">
       <div class="header">
         <mu-icon-button icon="arrow_back" slot="left" @click="back"/>
@@ -16,14 +17,13 @@
       </mu-paper>
     </div>
     <div class="content">
-      <alloy-scroll class="listview" ref="scrolls">
-        <transition name="trany" mode="out-in">
-          <keep-alive>
-            <router-view></router-view>
-          </keep-alive>
-        </transition>
-      </alloy-scroll>
+      <transition name="trany" mode="out-in">
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+      </transition>
     </div>
+  </alloy-scroll>
   </section>
 </template>
 
@@ -39,7 +39,7 @@
     },
     mounted() {
       setTimeout(() => {
-        this.$refs.scrolls.countHeight(40)      // 从新计算页面滚动高度
+        this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
       }, 20)
     },
     methods: {
@@ -66,6 +66,7 @@
       if (to.name !== 'selectian' && from.name !== 'selectian') {       // 注册身份认证不需要记录
         this.backGo++     // 累加要返回的次数
       }
+      console.log(this.backGo)
       next()
     },
     components: {
@@ -104,8 +105,8 @@
       }
       .logo {
         width: 100px;
-        margin: 40px auto 0 auto;
-        padding-bottom: 94px;
+        margin: 30px auto 0 auto;
+        padding-bottom: 84px;
         .img{
           width: 100%;
         }

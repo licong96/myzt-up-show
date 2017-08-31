@@ -43,6 +43,7 @@
     <transition name="tranx">
       <router-view></router-view>
     </transition>
+    <!-- 登录注册额外一个路由 -->
   </section>
 </template>
 
