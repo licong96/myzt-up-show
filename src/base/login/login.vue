@@ -100,7 +100,7 @@
             self.dialogHide = true
             self.progress = false
             self.dialog = false
-            console.log(response)
+            // console.log(response)
             switch (response.data.code) {
               case 1:
                 self.$router.push({       // 登录成功就跳个人中心

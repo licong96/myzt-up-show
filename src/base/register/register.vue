@@ -117,7 +117,7 @@
         this.axios.post('/api/user/geetest_submit_check', data)
         .then(function (response) {
           // 以为已验证成功有延迟提示，为了避免提示重合，做个延迟
-          console.log(response)
+          // console.log(response)
           setTimeout(() => {
             if (response.data.code === 1) {
               self.dialogText = '已发送短信验证码'
