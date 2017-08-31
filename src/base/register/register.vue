@@ -2,13 +2,6 @@
   <section class="register">
     <form ref="myform">
       <mu-text-field label="手机号" type="number" v-model="phone" @input="verifyPhone" :errorText="phoneErrorText" :maxLength="11" errorColor="#4caf50" icon="stay_current_portrait" labelFloat fullWidth />
-      <!-- <div class="captcha-wrap">
-        有这个遮罩在，就点不到下面的
-        <div class="shade" v-show="shade" @click="noShade"></div>
-        <div id="captcha" class="captcha" ref="captcha">
-          <p id="wait" class="show" v-show="captchaWait">正在加载验证码......</p>
-        </div>
-      </div> -->
       <div class="code-wrap">
         <mu-text-field label="验证码" type="number" v-model="code" @input="verifyCode" :errorText="codeErrorText" :maxLength="6" errorColor="#4caf50" icon="textsms" labelFloat fullWidth/>
         <mu-raised-button label="获取验证码" class="demo-raised-button code-btn" primary @click="getCode"/>
