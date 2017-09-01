@@ -315,7 +315,7 @@
           this.inputMsg.mailErrorText = ''
         }
       },
-      verifyWechat () {     // 验证微信，---------------------------------------------明天来---------------------------------
+      verifyWechat () {     // 验证微信
         this.inputMsg.wechatErrorText = ''
         if (!this.wechatReg.test(this.inputData.wechat)) {
           this.pass.wechat = false
@@ -331,7 +331,7 @@
           this.inputMsg.wechatErrorText = ''
         }
       },
-      introduceOverflow (isOverflow) {    // 项目介绍
+      introduceOverflow (isOverflow) {    // 项目介绍   ，----------------------------明天来--------------------------
         this.inputMsg.introduceErrorText = isOverflow ? '字数已超过最大限制，请精简' : ''
       },
       open (position) {         // 打开popup
