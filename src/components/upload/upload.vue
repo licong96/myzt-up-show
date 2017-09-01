@@ -213,7 +213,8 @@
         pass: {                 // 用来验证填写是否合格
           linkman: false,
           phone: false,
-          mail: false
+          mail: false,
+          wechat: false
         },
         industryList: ['互联网', '互联网金融', 'O2O', '大数据', '电子游戏', 'VR及3D打印'],    // 项目产业
         stageList: ['概念阶段', '研发中', '产品已发布', '产品已盈利', '其他'],   // 项目阶段
@@ -238,6 +239,7 @@
     created() {
       this.phoneReg = /^1(3|4|5|7|8)\d{9}$/    // 手机号验证
       this.mailReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/     // 邮箱地址
+      this.wechatReg = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/         // 微信
     },
     mounted() {
       setTimeout(() => {
@@ -315,18 +317,19 @@
       },
       verifyWechat () {     // 验证微信，---------------------------------------------明天来---------------------------------
         this.inputMsg.wechatErrorText = ''
-        if (this.wechatTimer) clearTimeout(this.wechatTimer)
-        this.wechatTimer = setTimeout(() => {
-          let reg = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/
-          if (!reg.test(this.inputData.wechat)) {
-            this.inputMsg.wechatErrorText = '微信号码有误'
-          } else {
-            this.inputMsg.wechatErrorText = ''
-          }
-          if (!this.inputData.wechat) {
-            this.inputMsg.wechatErrorText = ''
-          }
-        }, 1000)
+        if (!this.wechatReg.test(this.inputData.wechat)) {
+          this.pass.wechat = false
+          // 用延迟的方式显示文字提示，有助于提升输入体验
+          if (this.timer) clearTimeout(this.timer)
+          this.timer = setTimeout(() => {
+            if (!this.pass.wechat) {
+              this.inputMsg.wechatErrorText = '微信号码有误'
+            }
+          }, 1000)
+        } else {
+          this.pass.wechat = true
+          this.inputMsg.wechatErrorText = ''
+        }
       },
       introduceOverflow (isOverflow) {    // 项目介绍
         this.inputMsg.introduceErrorText = isOverflow ? '字数已超过最大限制，请精简' : ''
