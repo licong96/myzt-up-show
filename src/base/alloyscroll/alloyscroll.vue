@@ -44,15 +44,13 @@
           factor: 0.8, // 不必需,表示触摸位移与被运动属性映射关系，默认值是1
           min: window.innerHeight - self.targe.clientHeight - this.scrollHead,
           max: 0,
-          step: 45,
           change: function (value) {
             if (self.scrollValue) {     // 返回滚动位置
               self.$emit('scroll', value)
             }
             if (!value && value !== 0) {      // 如果是NaN那么就从新执行
               console.log('糟了，是NaN')
-              // location.reload()
-              self.alloy()
+              location.reload()
             }
           },
           touchStart: function () {

@@ -31,9 +31,10 @@
       }
     },
     created () {
+      this.getUserID()
       setTimeout(() => {
         this.progress = false
-      }, 2000)
+      }, 500)
     },
     mounted () {
       setTimeout(() => {
@@ -41,6 +42,15 @@
       }, 20)
     },
     methods: {
+      getUserID () {
+        this.axios.get('/api/user/index')
+          .then(function (response) {
+            console.log(response)
+            if (response.data.user_id) {
+              window.userInfo = response.data
+            }
+          })
+      },
       initSlideout () {     // 初始化侧边栏导航
         let panel = this.$refs.panel
         let menu = this.$refs.menu

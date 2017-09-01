@@ -25,7 +25,7 @@
           @errorhandle="errorhandle"
           :max-file-size="2097152"
           :isXhr="true"
-          url="wxgroupapi.php?type=uploadimg"
+          url="/api/upload/img"
           text="">
           <mu-raised-button class="demo-raised-button" label="上传logo或者图片" icon="cloud_upload" primary />
         </vue-core-image-upload>
@@ -45,13 +45,13 @@
               <span class="desc">
                 联系人<mu-icon value="*" class="asterisk"/>
               </span>
-              <mu-text-field hintText="联系人" type="text" v-model="inputData.linkman" :errorText="inputMsg.linkmanErrorText" @textOverflow="linkmanOverflow" :maxLength="5" errorColor="#4caf50" fullWidth />
+              <mu-text-field hintText="联系人" type="text" v-model="inputData.linkman" :errorText="inputMsg.linkmanErrorText" @input="linkmanOverflow" :maxLength="5" errorColor="#4caf50" fullWidth />
             </li>
             <li class="info-li">
               <span class="desc">
                 手机号<mu-icon value="*" class="asterisk"/>
               </span>
-              <mu-text-field hintText="手机号" type="number" v-model="inputData.phone" @input="verifyPhone" :errorText="inputMsg.phoneErrorText" @textOverflow="phoneOverflow" :maxLength="11" errorColor="#4caf50" fullWidth />
+              <mu-text-field hintText="手机号" type="number" v-model="inputData.phone" @input="verifyPhone" :errorText="inputMsg.phoneErrorText" :maxLength="11" errorColor="#4caf50" fullWidth />
             </li>
             <li class="info-li">
               <span class="desc">
@@ -188,8 +188,9 @@
     data() {
       return {
         inputData: {
-          image: '',                // 图片
-          linkman: '',            // 联系人
+          image: '',             // 只做图片展示，不传后台
+          url: '',               // 图片地址
+          linkman: '',           // 联系人
           phone: '',             // 手机号
           mail: '',             // 邮箱
           wechat: '',           // 微信
@@ -197,7 +198,7 @@
           introduce: '',       // 项目描述
           industry: '',        // 项目产业
           stage: '',           // 项目阶段
-          label: [],           // 项目标签
+          // label: [],           // 项目标签
           cityvalue: '北京 / 北京',  // 地区
           general: '',          // 项目概况
           greement: true        // 默认同意协议书
@@ -208,6 +209,11 @@
           mailErrorText: '',        // 邮箱输入错误提示
           wechatErrorText: '',      // 微信输入错误提示
           introduceErrorText: ''    // 项目简介
+        },
+        pass: {                 // 用来验证填写是否合格
+          linkman: false,
+          phone: false,
+          mail: false
         },
         industryList: ['互联网', '互联网金融', 'O2O', '大数据', '电子游戏', 'VR及3D打印'],    // 项目产业
         stageList: ['概念阶段', '研发中', '产品已发布', '产品已盈利', '其他'],   // 项目阶段
@@ -230,25 +236,28 @@
       }
     },
     created() {
+      this.phoneReg = /^1(3|4|5|7|8)\d{9}$/    // 手机号验证
+      this.mailReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/     // 邮箱地址
     },
     mounted() {
       setTimeout(() => {
       }, 20)
     },
     methods: {
-      imageuploaded (res) {   // 图片上传裁切
-        if (res.errcode === 0) {
-          this.inputData.image = res.data.src
+      imageuploaded (res) {   // 图片上传，后台返回
+        console.log(res)
+        if (res.code === 0) {
+          this.inputData.url = res.url
         }
       },
-      imagechanged (res) {
+      imagechanged (res) {    // 图片改变
         this.$refs.scrolls.to(0, 0)          // 滑动回到 0
         this.inputData.image = res
       },
-      imageuploading () {
+      imageuploading () {     // 上传过程
         console.log('上传过程中动画')
       },
-      errorhandle (res) {
+      errorhandle (res) {     // 错误提示
         alert('图片不能超过2M', res, 'error')
       },
       scroll (value) {        // 图片裁切页的滑动距离和页面保持一致
@@ -256,37 +265,55 @@
         Transform(core, true)
         core.translateY = -value
       },
-      linkmanOverflow (isOverflow) {    // 联系人验证
-        this.inputMsg.linkmanErrorText = isOverflow ? '这个名字不靠谱' : ''
-      },
-      phoneOverflow (isOverflow) {    // 联系人验证
-        this.inputMsg.phoneErrorText = isOverflow ? '手机号码有误' : ''
+      linkmanOverflow () {    // 联系人验证
+        this.inputMsg.linkmanErrorText = ''
+        if (this.inputData.linkman.length > 5 || this.inputData.linkman.length < 2) {
+          this.pass.linkman = false
+          // 用延迟的方式显示文字提示，有助于提升输入体验
+          if (this.timer) clearTimeout(this.timer)
+          this.timer = setTimeout(() => {
+            if (!this.pass.linkman) {
+              this.inputMsg.linkmanErrorText = '这个名字不靠谱'
+            }
+          }, 1000)
+        } else {
+          this.pass.linkman = true
+          this.inputMsg.linkmanErrorText = ''
+        }
       },
       verifyPhone () {      // 验证手机号是否合格
         this.inputMsg.phoneErrorText = ''
-        if (this.phoneTimer) clearTimeout(this.phoneTimer)
-        this.phoneTimer = setTimeout(() => {
-          let reg = /^1(3|4|5|7|8)\d{9}$/
-          if (!reg.test(this.inputData.phone)) {
-            this.inputMsg.phoneErrorText = '手机号码有误'
-          } else {
-            this.inputMsg.phoneErrorText = ''
-          }
-        }, 1000)
+        if (!this.phoneReg.test(this.inputData.phone)) {
+          this.pass.phone = false
+          // 用延迟的方式显示文字提示，有助于提升输入体验
+          if (this.timer) clearTimeout(this.timer)
+          this.timer = setTimeout(() => {
+            if (!this.pass.phone) {
+              this.inputMsg.phoneErrorText = '手机号码有误'
+            }
+          }, 1000)
+        } else {
+          this.pass.phone = true
+          this.inputMsg.phoneErrorText = ''
+        }
       },
       verifyMail () {     // 验证邮箱地址
         this.inputMsg.mailErrorText = ''
-        if (this.mailTimer) clearTimeout(this.mailTimer)
-        this.mailTimer = setTimeout(() => {
-          let reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
-          if (!reg.test(this.inputData.mail)) {
-            this.inputMsg.mailErrorText = '邮箱号码有误'
-          } else {
-            this.inputMsg.mailErrorText = ''
-          }
-        }, 1000)
+        if (!this.mailReg.test(this.inputData.mail)) {
+          this.pass.mail = false
+          // 用延迟的方式显示文字提示，有助于提升输入体验
+          if (this.timer) clearTimeout(this.timer)
+          this.timer = setTimeout(() => {
+            if (!this.pass.mail) {
+              this.inputMsg.mailErrorText = '邮箱号码有误'
+            }
+          }, 1000)
+        } else {
+          this.pass.mail = true
+          this.inputMsg.mailErrorText = ''
+        }
       },
-      verifyWechat () {     // 验证微信
+      verifyWechat () {     // 验证微信，---------------------------------------------明天来---------------------------------
         this.inputMsg.wechatErrorText = ''
         if (this.wechatTimer) clearTimeout(this.wechatTimer)
         this.wechatTimer = setTimeout(() => {
@@ -355,8 +382,7 @@
   @import "../../common/sass/colour";
 
   .upload {
-    margin-bottom: 50px;
-    background-color: #fff;
+    padding-bottom: 40px;
   }
   .upload-img {
     overflow: hidden;

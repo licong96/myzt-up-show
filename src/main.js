@@ -24,7 +24,8 @@ if ('addEventListener' in document) {    // 取消移动端点击事件延迟
   }, false)
 }
 
-window.slideNav = null           // 全局变量用来保存侧边栏导航
+window.slideNav = {}           // 全局变量用来保存侧边栏导航
+window.userInfo = {}          // 临时存放，最终会用vuex代替
 
 /* eslint-disable no-new */
 new Vue({

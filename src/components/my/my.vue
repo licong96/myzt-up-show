@@ -8,7 +8,7 @@
       <div class="head-color" ref="header"></div>
       <div class="user-logo-wrapper" ref="userLogo">
         <div class="user-logo">
-          <img class="img" src="../../../static/case.jpg">
+          <img class="img" src="../../common/images/portrait4.png">
         </div>
       </div>
       <div class="nav-paper" ref="navPaper">
