@@ -1,4 +1,5 @@
 @import "colour";
+@import "mini";
 html,
 body {
   background-color: $color-body-bg;
@@ -144,6 +145,15 @@ body {
   padding: 0;
   .mu-flat-button-primary {
     margin: 8px;
+  }
+}
+
+// 上传项目
+.upload {
+  // 商业计划书
+  .mu-raised-button-label {
+    max-width: 160px;
+    @include nowrap;
   }
 }
 

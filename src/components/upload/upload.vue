@@ -21,7 +21,6 @@
           :cropBtn="{'ok': '确定', 'cancel': '取消'}"
           @imageuploaded="imageuploaded"
           @imagechanged="imagechanged"
-          @imageuploading="imageuploading"
           @errorhandle="errorhandle"
           :max-file-size="2097152"
           :isXhr="true"
@@ -77,7 +76,7 @@
               <span class="desc">
                 项目名称<mu-icon value="*" class="asterisk"/>
               </span>
-              <mu-text-field hintText="项目名称" type="text" v-model="inputData.name" errorColor="#4caf50" fullWidth />
+              <mu-text-field hintText="项目名称" type="text" v-model="inputData.itemName" errorColor="#4caf50" fullWidth />
             </li>
             <li class="info-li">
               <span class="desc">
@@ -90,8 +89,8 @@
                 项目分类<mu-icon value="*" class="asterisk"/>
               </span>
               <div class="flex-1">
-                <mu-select-field v-model="inputData.industry" :labelFocusClass="['label-foucs']" label="选择项目产业" :maxHeight="300">
-                  <mu-menu-item v-for="(text, index) in industryList" :key="index" :value="index" :title="text" />
+                <mu-select-field v-model="inputData.industry" :labelFocusClass="['label-foucs']" label="选择项目分类" :maxHeight="300">
+                  <mu-menu-item v-for="(text, index) in industryList" :key="index+1" :value="index+1" :title="text" />
                 </mu-select-field>
               </div>
             </li>
@@ -101,20 +100,10 @@
               </span>
               <div class="flex-1">
                 <mu-select-field v-model="inputData.stage" :labelFocusClass="['label-foucs']" label="选择项目阶段" :maxHeight="300">
-                  <mu-menu-item v-for="(text, index) in stageList" :key="index" :value="index" :title="text" />
+                  <mu-menu-item v-for="(text, index) in stageList" :key="index+1" :value="index+1" :title="text" />
                 </mu-select-field>
               </div>
             </li>
-            <!-- <li class="info-li">
-              <span class="desc">
-                项目标签<mu-icon value="*" class="asterisk"/>
-              </span>
-              <div class="flex-1">
-                <mu-checkbox name="group" nativeValue="value1" v-model="inputData.label" label="标签一" class="demo-checkbox"/>
-                <mu-checkbox name="group" nativeValue="value2" v-model="inputData.label" label="标签二" class="demo-checkbox"/>
-                <mu-checkbox name="group" nativeValue="value3" v-model="inputData.label" label="标签三" class="demo-checkbox"/>
-              </div>
-            </li> -->
           </ul>
         </section>
         <mu-divider />
@@ -142,11 +131,11 @@
               <mu-text-field label="项目概况" type="text" labelFloat v-model="inputData.general" errorColor="#4caf50" multiLine :rows="6" :rowsMax="6" fullWidth />
             </li>
             <li class="flex-li">
-              <span class="desc">
+              <span class="desc business">
                 商业计划书
               </span>
-              <mu-raised-button class="demo-raised-button" label="选择文件" icon="cloud_upload" primary>
-                <input type="file" class="file-button">
+              <mu-raised-button class="demo-raised-button" :label="fileTxt" icon="cloud_upload" primary>
+                <input type="file" class="file-button" name="file" accept="application/vnd.ms-powerpoint,application/vnd.ms-works,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation" @change="uploadFile" ref="file">
               </mu-raised-button>
             </li>
           </ul>
@@ -155,11 +144,11 @@
         <!-- 同意协议，并且提交 -->
         <section class="food-btn">
           <div class="consent">
-            <mu-checkbox label="我已阅读并且同意" class="demo-checkbox" :value="inputData.greement" />
+            <mu-checkbox label="我已阅读并且同意" class="demo-checkbox" :value="inputData.greement" @input="changeGreement"/>
             <span class="open-link">《协议》</span>
           </div>
           <div class="submit">
-            <mu-raised-button class="demo-raised-button" label="提交" primary/>
+            <mu-raised-button class="demo-raised-button" label="提交" primary @click="submit"/>
           </div>
         </section>
       </div>
@@ -174,6 +163,11 @@
           </div>
         </mu-content-block>
       </mu-popup>
+      <!-- 提示消息 -->
+      <mu-dialog :open="dialog" title="提示">
+        {{dialogText}}
+        <mu-flat-button label="确定" slot="actions" primary @click="dialogClose"/>
+      </mu-dialog>
     </section>
   </alloy-scroll>
 </template>
@@ -194,13 +188,13 @@
           phone: '',             // 手机号
           mail: '',             // 邮箱
           wechat: '',           // 微信
-          name: '',            // 项目名称
-          introduce: '',       // 项目描述
-          industry: '',        // 项目产业
-          stage: '',           // 项目阶段
-          // label: [],           // 项目标签
+          itemName: '',        // 项目名称
+          introduce: '',       // 项目介绍
+          industry: 0,        // 项目分类
+          stage: 0,           // 项目阶段
           cityvalue: '北京 / 北京',  // 地区
           general: '',          // 项目概况
+          ppt: '',              // 商业计划书
           greement: true        // 默认同意协议书
         },
         inputMsg: {
@@ -214,11 +208,15 @@
           linkman: false,
           phone: false,
           mail: false,
-          wechat: false
+          wechat: true,         // 微信号不是必填，所以是 true
+          introduce: true       // 项目介绍，初始值为 true
         },
-        industryList: ['互联网', '互联网金融', 'O2O', '大数据', '电子游戏', 'VR及3D打印'],    // 项目产业
+        industryList: ['互联网', '互联网金融', 'O2O', '大数据', '电子游戏', 'VR及3D打印'],    // 项目分类
         stageList: ['概念阶段', '研发中', '产品已发布', '产品已盈利', '其他'],   // 项目阶段
         bottomPopup: false,   // 打开关闭底部popup，选择城市
+        fileTxt: '选择文件',        // 商业计划书，文字显示
+        dialog: false,            // 提示框
+        dialogText: '',           // 提示文字
         addressSlots: [
           {
             width: '100%',
@@ -237,6 +235,7 @@
       }
     },
     created() {
+      this.getIndustryList()        // 获取项目分类数据
       this.phoneReg = /^1(3|4|5|7|8)\d{9}$/    // 手机号验证
       this.mailReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/     // 邮箱地址
       this.wechatReg = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/         // 微信
@@ -246,21 +245,29 @@
       }, 20)
     },
     methods: {
+      getIndustryList () {
+        // let self = this
+        this.axios.get('/api/project/pclass')
+        .then(function (response) {
+          console.log(response)
+          // this.industryList = response
+        })
+      },
       imageuploaded (res) {   // 图片上传，后台返回
-        console.log(res)
-        if (res.code === 0) {
+        if (res.code === 1) {
           this.inputData.url = res.url
+        } else {
+          this.dialog = true
+          this.dialogText = '图片上传失败！请重试或刷新页面'
         }
       },
       imagechanged (res) {    // 图片改变
         this.$refs.scrolls.to(0, 0)          // 滑动回到 0
         this.inputData.image = res
       },
-      imageuploading () {     // 上传过程
-        console.log('上传过程中动画')
-      },
       errorhandle (res) {     // 错误提示
-        alert('图片不能超过2M', res, 'error')
+        this.dialog = true
+        this.dialogText = '图片不能超过2M'
       },
       scroll (value) {        // 图片裁切页的滑动距离和页面保持一致
         let core = document.getElementsByClassName('g-core-image-corp-container')[0]
@@ -331,7 +338,8 @@
           this.inputMsg.wechatErrorText = ''
         }
       },
-      introduceOverflow (isOverflow) {    // 项目介绍   ，----------------------------明天来--------------------------
+      introduceOverflow (isOverflow) {    // 项目介绍
+        this.pass.introduce = !isOverflow
         this.inputMsg.introduceErrorText = isOverflow ? '字数已超过最大限制，请精简' : ''
       },
       open (position) {         // 打开popup
@@ -353,6 +361,89 @@
             break
         }
         this.address = [this.addressProvince, this.addressCity]
+      },
+      uploadFile () {               // 商业计划书上传
+        let self = this
+        let file = this.$refs.file.files[0]
+        if (file) {
+          if (file.size > 31457280) {           // 不能大于30mb
+            self.dialog = true
+            self.dialogText = '文件大小不能超过30MB'
+          } else {
+            self.fileTxt = file.name
+            let formData = new FormData()
+            formData.append('file', file)
+            this.axios.post('/api/upload/ppt', formData)
+            .then(function (response) {
+              console.log(response)
+              if (response.data.code === 1) {
+                self.ppt = response.data.url
+              } else {
+                self.dialog = true
+                self.dialogText = '文件上传失败！'
+              }
+            })
+          }
+        }
+      },
+      changeGreement () {       // 同意协议
+        this.inputData.greement = !this.inputData.greement
+      },
+      submit () {           //  提交
+        if (!this.inputData.url) {
+          this.dialog = true
+          this.dialogText = '请上传LOGO或者图片'
+        } else if (!this.pass.linkman) {
+          this.dialog = true
+          this.dialogText = '联系人的姓名不靠谱'
+        } else if (!this.pass.phone) {
+          this.dialog = true
+          this.dialogText = '手机号有误'
+        } else if (!this.pass.mail) {
+          this.dialog = true
+          this.dialogText = '邮箱号有误'
+        } else if (!this.pass.wechat) {
+          this.dialog = true
+          this.dialogText = '微信号有误'
+        } else if (this.inputData.itemName === '') {
+          this.dialog = true
+          this.dialogText = '项目名称不能为空'
+        } else if (this.inputData.introduce === '') {
+          this.dialog = true
+          this.dialogText = '请输入项目介绍'
+        } else if (!this.pass.introduce) {
+          this.dialog = true
+          this.dialogText = '项目介绍文字不能超过最大限制'
+        } else if (this.inputData.industry === 0) {
+          this.dialog = true
+          this.dialogText = '请选择项目分类'
+        } else if (this.inputData.stage === 0) {
+          this.dialog = true
+          this.dialogText = '请选择项目阶段'
+        } else if (this.inputData.general === '') {
+          this.dialog = true
+          this.dialogText = '请输入项目概况'
+        } else if (!this.inputData.greement) {
+          this.dialog = true
+          this.dialogText = '您需要勾选同意协议，才能提交'
+        } else {
+          let self = this
+          this.axios.post('/api/project/add', this.inputData)
+          .then(function (response) {
+            console.log(response)
+            if (response.data.code === 1) {
+              self.$router.push({
+                path: '/my/myUpload'
+              })
+            } else {
+              self.dialog = true
+              self.dialogText = response.data.msg
+            }
+          })
+        }
+      },
+      dialogClose () {      // 关闭提示对话框
+        this.dialog = false
       },
       openSlideout () {     // 打开侧边栏导航
         window.slideNav.toggle()
@@ -472,6 +563,9 @@
         .desc {
           margin-right: 30px;
         }
+        .business {
+          margin-right: 16px;
+        }
         .city {
           flex: 1;
         }
@@ -523,16 +617,7 @@
     border-radius: 50%;
     box-shadow: 0 3px 10px rgba(0,0,0,.156863), 0 3px 10px rgba(0,0,0,.227451);
   }
-  // 错误提示
-  .phone-toast {
-    bottom: 20%;
-    left: 50%;
-    margin-left: -68px;
-    width: 136px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-  }
+  // 上传按钮样式
   .file-button{
     position: absolute;
     left: 0;
