@@ -17,6 +17,8 @@
 </template>
 
 <script>
+  import {mapActions} from 'vuex'
+
   export default {
     data () {
       return {
@@ -106,6 +108,9 @@
                 self.$router.push({       // 登录成功就跳个人中心
                   path: '/my/myUpload'
                 })
+                self.setUserInfo({        // 保存到全局userInfo
+                  userInfo: response.data
+                })
                 break
               default:
                 self.dialogText = response.data.msg
@@ -116,7 +121,10 @@
       },
       dialogClose () {      // 关闭提示对话框
         this.dialog = false
-      }
+      },
+      ...mapActions([             // 修改
+        'setUserInfo'
+      ])
     }
   }
 </script>

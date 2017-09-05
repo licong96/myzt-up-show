@@ -35,7 +35,7 @@
         </section>
         <!-- 项目列表 -->
         <section class="item-wrap">
-          <my-item @select="selectLink"></my-item>
+          <my-item @select="selectLink" :data="list"></my-item>
         </section>
       </div>
     </alloy-scroll>
@@ -53,35 +53,71 @@
   import AlloyTouch from 'alloytouch'
   import MyItem from '@/base/item/item'
   import AlloyScroll from '@/base/alloyscroll/alloyscroll'
+  import {mapGetters, mapActions} from 'vuex'
 
   export default {
     data () {
       return {
-        swipeImg: [     // 轮播图
-          'http://www.my930.com/sites/default/files/public/6821495528799.jpeg',
-          'http://www.my930.com/sites/default/files/public/6821488772475.jpeg',
-          'http://www.my930.com/sites/default/files/public/6821495528753.jpeg',
-          'http://www.my930.com/sites/default/files/public/6821483582164.jpeg'
-        ],
+        swipeImg: [],         // 轮播图
         imgLoadOne: true,
-        currentIndex: 0,   // 轮播图下面的点
-        filtrate: ['互联网', '互联网金融', 'O2O', '大数据', '电子游戏', 'VR及3D打印']
+        currentIndex: 0,      // 轮播图下面的点
+        filtrate: [],         // 分类
+        list: []
       }
     },
     created () {
+      this.getIndexData()      // 获取轮播图和分类数据
+      this.getItemData()      // 获取项目数据
     },
     mounted () {
-      setTimeout(() => {
-        this.mySwipe()
-        this.myTransformX()
-        this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
-      }, 20)
+    },
+    computed: {
+      ...mapGetters([
+        'userInfo'
+      ])
     },
     methods: {
+      getIndexData () {        // 获取轮播图和分类数据
+        let self = this
+        this.axios.get('/api/index/index')
+          .then(function (response) {
+            console.log(response)
+            let arrPic = []
+            for (let i = 0; i < response.data.adlist.length; i++) {
+              arrPic.push(response.data.adlist[i].pic)
+            }
+            self.swipeImg = arrPic
+            self.filtrate = response.data.class
+            setTimeout(() => {
+              self.mySwipe()
+              self.myTransformX()
+              self.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
+            }, 20)
+          })
+      },
+      getItemData () {        // 获取项目数据
+        let self = this
+        this.axios.get('/api/index/projectlist')
+          .then(function (response) {
+            console.log(response)
+            if (response.data.code === 1) {
+              self.list = response.data.list
+            }
+            setTimeout(() => {
+              self.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
+            }, 20)
+          })
+      },
       handleChange (path) {      // 快速链接
-        this.$router.push({
-          path: `/${path}`
-        })
+        if (this.userInfo.user_id) {
+          this.$router.push({
+            path: `/${path}`
+          })
+        } else {
+          this.setDialog({muDialog: true})
+          this.setDialogText({muDialogText: '您还没有登陆'})
+          this.setDialogUrl({muDialogUrl: '/home/account/login'})
+        }
       },
       selectLink (item) {       // 获取列表点击事件的返回数据
         this.$router.push({
@@ -141,7 +177,12 @@
           animationEnd: function (value) {
           }
         })
-      }
+      },
+      ...mapActions([
+        'setDialog',
+        'setDialogText',
+        'setDialogUrl'
+      ])
     },
     components: {
       MyItem,

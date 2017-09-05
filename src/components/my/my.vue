@@ -21,7 +21,7 @@
         </mu-paper>
       </div>
     </div>
-    <alloy-scroll ref="scrolls" :data="list" :scroll-value="scrollValue" :scroll-head="scrollHead" @scroll="scroll">
+    <alloy-scroll ref="scrolls" :scroll-value="scrollValue" :scroll-head="scrollHead" @scroll="scroll">
       <div class="content">
         <keep-alive>
           <router-view name="list"></router-view>
@@ -38,11 +38,11 @@
 <script>
   import AlloyScroll from '@/base/alloyscroll/alloyscroll'
   import Transform from 'css3transform'
+  import {mapGetters} from 'vuex'
 
   export default {
     data () {
       return {
-        list: ['1', '2', '3', '3', '3', '3', '3', '3', '3', '3', '3'],
         scrollValue: true,            // 返回滚动value
         scrollHead: 56,               // min要减去的额外高度
         bottomNav: 'myUpload'         // 导航切换，当前选中的
@@ -65,6 +65,14 @@
         this.header.originY = -this.headerHeight       // ransform-origin为 center top
         this.header.translateY = -this.headerHeight    // 一半
       })
+    },
+    computed: {
+      ...mapGetters([         // 获取
+        'userInfo',
+        'muDialog',
+        'muDialogText',
+        'muDialogUrl'
+      ])
     },
     methods: {
       scroll (value) {

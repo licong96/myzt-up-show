@@ -31,26 +31,27 @@
       </mu-list>
     </div>
     <mu-float-button icon="close" class="demo-float-button close" @click="close"/>
-    <!-- 提示消息 -->
-    <mu-dialog :open="dialog" title="提示">
-      您需要登录
-      <mu-flat-button label="确定" slot="actions" primary @click="dialogClose"/>
-    </mu-dialog>
   </section>
 </template>
 
 <script>
+  import {mapGetters, mapActions} from 'vuex'
+
   export default {
     data () {
       return {
-        dialog: false,
         login: true
       }
     },
     mounted () {
-      if (window.userInfo.user_id) {
+      if (this.userInfo.user_id) {
         this.login = false
       }
+    },
+    computed: {
+      ...mapGetters([
+        'userInfo'
+      ])
     },
     methods: {
       links (path) {      // 跳转链接
@@ -61,24 +62,24 @@
       },
       ifLinks (path) {      // 这个是要判断是否登录，再跳转
         this.close()       // 先关闭侧边栏导航
-        console.log(window.userInfo)
-        if (window.userInfo.user_id) {
+        if (this.userInfo.user_id) {
           this.$router.push({
             path: `/${path}`
           })
         } else {
-          this.dialog = true
+          this.setDialog({muDialog: true})
+          this.setDialogText({muDialogText: '您还没有登陆'})
+          this.setDialogUrl({muDialogUrl: '/home/account/login'})
         }
-      },
-      dialogClose () {      // 关闭提示对话框
-        this.dialog = false
-        this.$router.push({
-          path: '/home/account/login'
-        })
       },
       close () {
         window.slideNav.close()
-      }
+      },
+      ...mapActions([
+        'setDialog',
+        'setDialogText',
+        'setDialogUrl'
+      ])
     }
   }
 </script>

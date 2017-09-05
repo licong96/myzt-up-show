@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
 import MuseUI from 'muse-ui'
 // import fastclick from 'fastclick'
 import axios from 'axios'
@@ -31,6 +32,7 @@ window.userInfo = {}          // 临时存放，最终会用vuex代替
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App }
 })

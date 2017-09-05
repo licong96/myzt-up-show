@@ -2,7 +2,7 @@
   <section class="item-wrap" ref="touch">
     <div class="scroll" ref="target">
       <mu-list>
-        <div v-for="(item, index) in 5" @click="selectItem(index)">
+        <div v-for="(item, index) in data" @click="selectItem(index)">
           <mu-list-item class="list-wrap">
             <div class="list">
               <div class="image">
@@ -26,9 +26,15 @@
 
 <script>
   export default {
-    mounted () {
+    props: {
+      data: {
+        type: Array,
+        default: []
+      }
     },
     created () {
+    },
+    mounted () {
     },
     methods: {
       selectItem (item) {    // 配发事件，实现路由跳转，返回自身数据

@@ -44,7 +44,7 @@
               <span class="desc">
                 联系人<mu-icon value="*" class="asterisk"/>
               </span>
-              <mu-text-field hintText="联系人" type="text" v-model="inputData.linkman" :errorText="inputMsg.linkmanErrorText" @input="linkmanOverflow" :maxLength="5" errorColor="#4caf50" fullWidth />
+              <mu-text-field hintText="联系人" type="text" v-model="inputData.linkman" :errorText="inputMsg.linkmanErrorText" @input="linkmanOverflow" :maxLength="6" errorColor="#4caf50" fullWidth />
             </li>
             <li class="info-li">
               <span class="desc">
@@ -245,12 +245,11 @@
       }, 20)
     },
     methods: {
-      getIndustryList () {
-        // let self = this
+      getIndustryList () {        // 获取项目分类
+        let self = this
         this.axios.get('/api/project/pclass')
         .then(function (response) {
-          console.log(response)
-          // this.industryList = response
+          self.industryList = response.data
         })
       },
       imageuploaded (res) {   // 图片上传，后台返回
@@ -276,7 +275,7 @@
       },
       linkmanOverflow () {    // 联系人验证
         this.inputMsg.linkmanErrorText = ''
-        if (this.inputData.linkman.length > 5 || this.inputData.linkman.length < 2) {
+        if (this.inputData.linkman.length > 6 || this.inputData.linkman.length < 2) {
           this.pass.linkman = false
           // 用延迟的方式显示文字提示，有助于提升输入体验
           if (this.timer) clearTimeout(this.timer)
