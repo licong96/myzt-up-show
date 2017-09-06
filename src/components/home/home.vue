@@ -129,8 +129,8 @@
         }
       },
       selectLink (item) {       // 获取列表点击事件的返回数据
-        this.setHomeItem({homeItem: item})
-        console.log(this.homeItem)
+        // console.log(item)
+        this.setHomeItem({homeItem: item})      // 把当前列表需要的数据保存
         this.$router.push({
           path: `/home/detail/${item.id}`
         })

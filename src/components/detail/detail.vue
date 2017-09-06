@@ -65,13 +65,13 @@
       }
     },
     created() {
+      this.getData()        // 获取数据
     },
     mounted() {
       setTimeout(() => {
         this.head = this.$refs.head.clientHeight
         this.scroller = this.$refs.scroller   // 保存全局，方便调用
         this.alloy()      // 页面滚动，需要等资源全部加载完成再初始化
-        this.getData()        // 获取数据
       }, 20)
     },
     computed: {

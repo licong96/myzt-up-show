@@ -15,6 +15,9 @@ const matutaions = {
   },
   [types.SET_LOGINLINK](state, loginLink) {
     state.loginLink = loginLink
+  },
+  [types.SET_HOMEITEM](state, homeItem) {
+    state.homeItem = homeItem
   }
 }
 
