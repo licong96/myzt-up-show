@@ -12,7 +12,7 @@
       <mu-paper>
         <mu-bottom-nav :value="bottomNav" shift @change="handleChange">
           <mu-bottom-nav-item value="login" title="登录" icon="face"/>
-          <mu-bottom-nav-item value="register" title="注册" icon="person_outline"/>
+          <mu-bottom-nav-item value="register" title="注册" icon="child_care"/>
         </mu-bottom-nav>
       </mu-paper>
     </div>
@@ -38,9 +38,9 @@
       }
     },
     mounted() {
-      setTimeout(() => {
+      this.$nextTick(() => {
         this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
-      }, 20)
+      })
     },
     methods: {
       handleChange (val) {

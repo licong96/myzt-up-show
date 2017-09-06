@@ -51,7 +51,7 @@
     created () {
     },
     mounted () {
-      setTimeout(() => {
+      this.$nextTick(() => {
         this.header = this.$refs.header
         this.userLogo = this.$refs.userLogo
         this.navPaper = this.$refs.navPaper
@@ -75,29 +75,29 @@
       ])
     },
     methods: {
-      scroll (value) {
-        if (value < 0) {      // 上滑缩小
-          if (value < -this.headerHeight) {     // 规定最小值
-            value = -this.headerHeight
+      scroll (obj) {
+        if (obj.value < 0) {      // 上滑缩小
+          if (obj.value < -this.headerHeight) {     // 规定最小值
+            obj.value = -this.headerHeight
           }
-          this.scaleY = (280 + value) / 280    // 计算缩小比例
+          this.scaleY = (280 + obj.value) / 280    // 计算缩小比例
           // console.log(this.scaleY)
           this.header.scaleY = this.scaleY
           this.userLogo.scaleX = this.userLogo.scaleY = this.scaleY
-          this.userLogo.translateY = value / 3.4
+          this.userLogo.translateY = obj.value / 3.4
           // 导航最大上滑距离
-          if (value < -this.navMaxHeight) {
+          if (obj.value < -this.navMaxHeight) {
             this.navPaper.translateY = -this.navMaxHeight
           } else {
-            this.navPaper.translateY = value
+            this.navPaper.translateY = obj.value
           }
         } else {      // 下滑放大
-          this.scaleY = 1 + value / 240      // 计算放大比例
+          this.scaleY = 1 + obj.value / 240      // 计算放大比例
           // console.log(this.scaleY)
           this.header.scaleY = this.scaleY
           this.userLogo.scaleX = this.userLogo.scaleY = this.scaleY
-          this.userLogo.translateY = value / 1.7
-          this.navPaper.translateY = value / 1.2
+          this.userLogo.translateY = obj.value / 1.7
+          this.navPaper.translateY = obj.value / 1.2
         }
       },
       openSlideout () {   // 打开侧边栏导航
@@ -123,10 +123,10 @@
       if (from.name === 'myDetail') {
         return false
       }
-      setTimeout(() => {        // 检测图片是否加载完毕，用vuex保存状态，再初始化滚动，这是临时的
+      this.$nextTick(() => {    // 检测图片是否加载完毕，用vuex保存状态，再初始化滚动，这是临时的
         this.$refs.scrolls.to(0)
         this.$refs.scrolls.countHeight(this.scrollHead)
-      }, 50)
+      })
     },
     components: {
       AlloyScroll

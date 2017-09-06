@@ -1,25 +1,27 @@
 <template lang="html">
   <section class="item-wrap" ref="touch">
-    <div class="scroll" ref="target">
+    <div class="scroll" ref="target" v-show="data.length">
       <mu-list>
-        <div v-for="(item, index) in data" @click="selectItem(index)">
+        <div v-for="(item, index) in data" @click="selectItem(item)">
           <mu-list-item class="list-wrap">
             <div class="list">
               <div class="image">
-                <img src="../../../static/case.jpg" class="img">
+                <img :src="item.url" class="img">
               </div>
               <div class="content">
-                <h3 class="title">项目标题</h3>
-                <span class="label">项目阶段</span>
-                <p class="desc">中岁颇好道，晚家南山陲。兴来每独往，胜事空自知。</p>
+                <h3 class="title">{{item.itemName}}</h3>
+                <span class="label"><em>{{item.cname}}</em><em class="em-light">{{item.sname}}</em></span>
+                <p class="desc">{{item.introduce}}</p>
               </div>
-            </div>
-            <div class="chip">
-              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>互联网</span>
             </div>
           </mu-list-item>
         </div>
       </mu-list>
+    </div>
+    <!-- 没有列表显示这个 -->
+    <div class="empty" v-show="!data.length">
+      <mu-icon value="find_replace" class="icon"/>
+      <p class="desc">暂时没有此分类</p>
     </div>
   </section>
 </template>
@@ -88,6 +90,9 @@
           padding: 5px 0;
           font-size: 12px;
           color: #999;
+          .em-light {
+            margin-left: 10px;
+          }
         }
         .desc {
           margin: 0;
@@ -96,23 +101,19 @@
         }
       }
     }
-    // 标签
-    .chip {
-      padding-top: 10px;
-      .label {
-        display: inline-block;
-        margin-right: 6px;
-        padding: 2px 6px;
-        min-width: 70px;
-        border-radius: 26px;
-        background-color: #e57373;
-        // background-color: $color-background;
-        color: #fff;
-        font-size: 12px;
-        .chip-icon {
-          vertical-align: middle;
-          font-size: 15px;
-        }
+    // 没有数据
+    .empty {
+      padding: 15px 0;
+      background-color: #fff;
+      text-align: center;
+      .icon {
+        font-size: 60px;
+        color: $color-background;
+      }
+      .desc {
+        margin: 0;
+        font-size: 16px;
+        color: #666;
       }
     }
   }

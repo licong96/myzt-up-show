@@ -1,6 +1,6 @@
 <template lang="html">
   <section class="home">
-    <alloy-scroll class="listview" ref="scrolls">
+    <alloy-scroll class="listview" ref="scrolls" :scroll-value="scrollValue" @scroll="scroll">
       <div class="home-touch" ref="refelement">
         <header class="header">
           <mu-appbar title="首页">
@@ -30,7 +30,9 @@
         <!-- 左右滑动筛选 -->
         <section class="filtrate" ref="scroll" data-slideout-ignore>
           <ul class="label-wrap" ref="target">
-            <li class="label" v-for="item in filtrate"><mu-flat-button class="demo-flat-button">{{item}}</mu-flat-button></li>
+            <li class="label" v-for="(item, index) in filtrate" @click="screenItem(item.id, index)">
+              <mu-flat-button class="demo-flat-button" :class="{active: index===labelActive}">{{item.cname}}</mu-flat-button>
+            </li>
           </ul>
         </section>
         <!-- 项目列表 -->
@@ -62,7 +64,11 @@
         imgLoadOne: true,
         currentIndex: 0,      // 轮播图下面的点
         filtrate: [],         // 分类
-        list: []
+        list: [],             // 列表数据
+        labelActive: -1,      // 分类切换class
+        scrollValue: true,    // 是否返回滑动value值
+        loadmore: true,       // 执行滑动加载
+        page: 1               // 加载数据的页数
       }
     },
     created () {
@@ -73,7 +79,8 @@
     },
     computed: {
       ...mapGetters([
-        'userInfo'
+        'userInfo',
+        'homeItem'
       ])
     },
     methods: {
@@ -81,31 +88,32 @@
         let self = this
         this.axios.get('/api/index/index')
           .then(function (response) {
-            console.log(response)
+            // console.log(response)
             let arrPic = []
             for (let i = 0; i < response.data.adlist.length; i++) {
               arrPic.push(response.data.adlist[i].pic)
             }
             self.swipeImg = arrPic
-            self.filtrate = response.data.class
-            setTimeout(() => {
+            response.data.industry.unshift({id: '', cname: '全部'})
+            self.filtrate = response.data.industry
+            self.$nextTick(() => {
               self.mySwipe()
               self.myTransformX()
               self.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
-            }, 20)
+            })
           })
       },
       getItemData () {        // 获取项目数据
         let self = this
         this.axios.get('/api/index/projectlist')
           .then(function (response) {
-            console.log(response)
+            // console.log(response)
             if (response.data.code === 1) {
               self.list = response.data.list
             }
-            setTimeout(() => {
+            self.$nextTick(() => {
               self.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
-            }, 20)
+            })
           })
       },
       handleChange (path) {      // 快速链接
@@ -114,15 +122,47 @@
             path: `/${path}`
           })
         } else {
+          this.setLoginLink({loginLink: `/${path}`})          // 保存到全局去，登录完后跳到
           this.setDialog({muDialog: true})
           this.setDialogText({muDialogText: '您还没有登陆'})
           this.setDialogUrl({muDialogUrl: '/home/account/login'})
         }
       },
       selectLink (item) {       // 获取列表点击事件的返回数据
+        this.setHomeItem({homeItem: item})
+        console.log(this.homeItem)
         this.$router.push({
-          path: `/home/detail/${item}`
+          path: `/home/detail/${item.id}`
         })
+      },
+      screenItem (id, index) {        // 分类筛选
+        this.labelActive = index      // 修改class颜色
+        let self = this
+        this.axios.post('/api/index/projectlist', {industry: id})
+          .then(function (response) {
+            console.log(response)
+            if (response.data.code === 1) {
+              self.list = response.data.list
+              self.$nextTick(() => {
+                self.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
+              })
+            }
+          })
+      },
+      scroll (obj) {            // 滑动加载更多
+        if (obj.value <= obj.min + 5 && this.loadmore) {
+          let self = this
+          this.loadmore = false
+          this.axios.post('/api/index/projectlist', {page: this.page})
+            .then(function (response) {
+              console.log(response)
+              if (response.data.list.length) {
+                self.list = response.data.list
+                self.page ++
+              }
+              self.loadmore = true
+            })
+        }
       },
       openSlideout () {   // 打开侧边栏导航
         window.slideNav.toggle()
@@ -148,9 +188,9 @@
       loadImage () {      // 轮播图片加载完成后，从新计算高度
         if (this.imgLoadOne) {      // 只加载一次
           this.imgLoadOne = false
-          setTimeout(() => {
+          this.$nextTick(() => {
             this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
-          }, 20)
+          })
         }
       },
       myTransformX () {     // 滑动筛选标签
@@ -181,7 +221,9 @@
       ...mapActions([
         'setDialog',
         'setDialogText',
-        'setDialogUrl'
+        'setDialogUrl',
+        'setLoginLink',
+        'setHomeItem'
       ])
     },
     components: {
@@ -276,6 +318,9 @@
         flex-wrap: nowrap;
         .label {
           // @include border(r);
+        }
+        .active {
+          color: $color-background;
         }
       }
     }

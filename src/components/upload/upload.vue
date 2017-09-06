@@ -90,7 +90,7 @@
               </span>
               <div class="flex-1">
                 <mu-select-field v-model="inputData.industry" :labelFocusClass="['label-foucs']" label="选择项目分类" :maxHeight="300">
-                  <mu-menu-item v-for="(text, index) in industryList" :key="index+1" :value="index+1" :title="text" />
+                  <mu-menu-item v-for="text in industryList" :key="text.id" :value="text.id" :title="text.cname" />
                 </mu-select-field>
               </div>
             </li>
@@ -100,7 +100,7 @@
               </span>
               <div class="flex-1">
                 <mu-select-field v-model="inputData.stage" :labelFocusClass="['label-foucs']" label="选择项目阶段" :maxHeight="300">
-                  <mu-menu-item v-for="(text, index) in stageList" :key="index+1" :value="index+1" :title="text" />
+                  <mu-menu-item v-for="text in stageList" :key="text.id" :value="text.id" :title="text.sname" />
                 </mu-select-field>
               </div>
             </li>
@@ -211,8 +211,8 @@
           wechat: true,         // 微信号不是必填，所以是 true
           introduce: true       // 项目介绍，初始值为 true
         },
-        industryList: ['互联网', '互联网金融', 'O2O', '大数据', '电子游戏', 'VR及3D打印'],    // 项目分类
-        stageList: ['概念阶段', '研发中', '产品已发布', '产品已盈利', '其他'],   // 项目阶段
+        industryList: [],    // 项目分类
+        stageList: [],   // 项目阶段
         bottomPopup: false,   // 打开关闭底部popup，选择城市
         fileTxt: '选择文件',        // 商业计划书，文字显示
         dialog: false,            // 提示框
@@ -235,7 +235,7 @@
       }
     },
     created() {
-      this.getIndustryList()        // 获取项目分类数据
+      this.getIndustryList()        // 获取项目分类数据，和阶段
       this.phoneReg = /^1(3|4|5|7|8)\d{9}$/    // 手机号验证
       this.mailReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/     // 邮箱地址
       this.wechatReg = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/         // 微信
@@ -243,13 +243,15 @@
     mounted() {
       setTimeout(() => {
       }, 20)
+      // this.$nextTick(() => {})
     },
     methods: {
-      getIndustryList () {        // 获取项目分类
+      getIndustryList () {        // 获取项目分类，和阶段
         let self = this
-        this.axios.get('/api/project/pclass')
+        this.axios.get('/api/project/getaddinfo')
         .then(function (response) {
-          self.industryList = response.data
+          self.industryList = response.data.industry
+          self.stageList = response.data.stage
         })
       },
       imageuploaded (res) {   // 图片上传，后台返回

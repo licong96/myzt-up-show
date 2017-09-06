@@ -46,7 +46,10 @@
           max: 0,
           change: function (value) {
             if (self.scrollValue) {     // 返回滚动位置
-              self.$emit('scroll', value)
+              self.$emit('scroll', {
+                value: value,
+                min: this.min
+              })
             }
             if (!value && value !== 0) {      // 如果是NaN那么就从新执行
               console.log('糟了，是NaN')

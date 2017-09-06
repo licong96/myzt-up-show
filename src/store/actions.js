@@ -12,3 +12,9 @@ export const setDialogText = function ({commit, state}, {muDialogText}) {       
 export const setDialogUrl = function ({commit, state}, {muDialogUrl}) {       //  弹出框url
   commit(types.SET_MUDIALOGURL, muDialogUrl)
 }
+export const setLoginLink = function ({commit, state}, {loginLink}) {       //  修改登录之后，要跳转的地方
+  commit(types.SET_LOGINLINK, loginLink)
+}
+export const setHomeItem = function ({commit, state}, {homeItem}) {       //  首页的列表详情页的数据
+  commit(types.SET_HOMEITEM, homeItem)
+}

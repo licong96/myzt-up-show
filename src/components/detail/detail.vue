@@ -32,16 +32,6 @@
           <span class="title">项目阶段：</span>
           <span class="list">产品已发布</span>
         </mu-list-item>
-        <!-- <mu-list-item class="item">
-          <div class="flex-item">
-            <span class="title">项目标签：</span>
-            <div class="flex-1">
-              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签一</span>
-              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签二</span>
-              <span class="label"><mu-icon value="bookmark" class="chip-icon"/>标签三</span>
-            </div>
-          </div>
-        </mu-list-item> -->
       </section>
       <section class="img-txt">
         <p class="txt">这首诗意在极写隐居终南山之闲适怡乐，随遇而安之情。第一联叙述自己中年以
@@ -66,6 +56,7 @@
 <script>
   import Transform from 'css3transform'
   import AlloyTouch from 'alloytouch'
+  import {mapGetters} from 'vuex'
 
   export default {
     data () {
@@ -80,9 +71,18 @@
         this.head = this.$refs.head.clientHeight
         this.scroller = this.$refs.scroller   // 保存全局，方便调用
         this.alloy()      // 页面滚动，需要等资源全部加载完成再初始化
+        this.getData()        // 获取数据
       }, 20)
     },
+    computed: {
+      ...mapGetters([
+        'homeItem'
+      ])
+    },
     methods: {
+      getData () {
+        console.log(this.homeItem)
+      },
       alloy() {
         let self = this
         // let head = this.$refs.head.clientHeight          // 顶部距离

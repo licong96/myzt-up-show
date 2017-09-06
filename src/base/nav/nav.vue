@@ -6,8 +6,8 @@
         <mu-flat-button label="注册" class="demo-flat-button" @click="links('home/account/register')"/>
       </div>
       <div class="login" v-show="!login">
-        <span class="phone">13699531996</span>
-        <mu-flat-button label="退出" class="demo-flat-button"/>
+        <span class="phone">{{mobile}}</span>
+        <mu-flat-button label="退出" class="demo-flat-button" @click="quitLogin"/>
       </div>
       <mu-list class="mu-list">
         <mu-list-item title="首页" @click="links('home')">
@@ -40,15 +40,21 @@
   export default {
     data () {
       return {
-        login: true
-      }
-    },
-    mounted () {
-      if (this.userInfo.user_id) {
-        this.login = false
       }
     },
     computed: {
+      login () {
+        let n = true
+        if (this.userInfo.user_id) {
+          n = false
+        } else {
+          n = true
+        }
+        return n
+      },
+      mobile () {
+        return this.userInfo.mobile
+      },
       ...mapGetters([
         'userInfo'
       ])
@@ -67,18 +73,31 @@
             path: `/${path}`
           })
         } else {
+          this.setLoginLink({loginLink: `/${path}`})          // 保存到全局去，登录完后跳到
           this.setDialog({muDialog: true})
           this.setDialogText({muDialogText: '您还没有登陆'})
           this.setDialogUrl({muDialogUrl: '/home/account/login'})
         }
       },
+      quitLogin () {      // 退出登录
+        let self = this
+        this.axios.get('/api/user/logout')
+          .then(function (response) {
+            self.setUserInfo({userInfo: {}})
+            self.setDialog({muDialog: true})
+            self.setDialogText({muDialogText: '已退出登录'})
+            self.setDialogUrl({muDialogUrl: ''})
+          })
+      },
       close () {
         window.slideNav.close()
       },
       ...mapActions([
+        'setUserInfo',
         'setDialog',
         'setDialogText',
-        'setDialogUrl'
+        'setDialogUrl',
+        'setLoginLink'
       ])
     }
   }

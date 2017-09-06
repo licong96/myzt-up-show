@@ -12,6 +12,9 @@ const matutaions = {
   },
   [types.SET_MUDIALOGURL](state, muDialogUrl) {
     state.muDialogUrl = muDialogUrl
+  },
+  [types.SET_LOGINLINK](state, loginLink) {
+    state.loginLink = loginLink
   }
 }
 

@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import {mapActions} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
 
   export default {
     data () {
@@ -38,6 +38,12 @@
     created () {
       this.phoneReg = /^1(3|4|5|7|8)\d{9}$/         // 手机号验证
       this.passReg = /^.{6,16}$/     // 密码
+    },
+    computed: {
+      ...mapGetters([
+        'userInfo',
+        'loginLink'
+      ])
     },
     methods: {
       verifyPhone () {      // 验证手机号是否合格
@@ -102,14 +108,12 @@
             self.dialogHide = true
             self.progress = false
             self.dialog = false
-            // console.log(response)
             switch (response.data.code) {
               case 1:
-                self.$router.push({       // 登录成功就跳个人中心
-                  path: '/my/myUpload'
-                })
-                self.setUserInfo({        // 保存到全局userInfo
-                  userInfo: response.data
+                self.setUserInfo({userInfo: response.data.result})        // 登录后保存到vuex
+                console.log(self.loginLink)
+                self.$router.push({       // 登录成功就跳到之前的要去的地方
+                  path: self.loginLink
                 })
                 break
               default:
