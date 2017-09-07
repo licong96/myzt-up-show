@@ -16,8 +16,7 @@
       <section class="top">
         <div class="collec">
           <h3 class="name">{{data.itemName}}</h3>
-          <mu-checkbox label="收藏" class="demo-checkbox" uncheckIcon="favorite_border" checkedIcon="favorite"/>
-          <mu-checkbox label="关注" class="demo-checkbox" uncheckIcon="favorite_border" checkedIcon="favorite"/>
+          <mu-checkbox :label="collectTxt" class="demo-checkbox" uncheckIcon="favorite_border" checkedIcon="favorite" :value="collect" @input="changeCollect"/>
         </div>
         <p class="introduce">{{data.introduce}}</p>
         <p class="city"><mu-icon class="room" value="room"/>{{data.cityvalue}}</p>
@@ -37,9 +36,24 @@
         <img class="image" :src="data.url" @load="loadImage">
       </section>
       <section class="business">
-        <mu-float-button icon="file_download" class="demo-float-button"/>
-        <p class="desc">下载商业计划书</p>
+        <div class="inline-block" @click="download">
+          <mu-float-button icon="file_download" class="demo-float-button"/>
+          <p class="desc">下载商业计划书</p>
+        </div>
       </section>
+    </div>
+    <!-- 关注 -->
+    <section class="attention" @click="attentionBtn">
+      <mu-list-item>关注</mu-list-item>
+    </section>
+    <!-- 关注填写信息 -->
+    <div class="attention-dialog">
+      <mu-dialog :open="dialog" title="请填写信息">
+        <mu-text-field hintText="请输入您的名字" type="text" v-model="inputData.linkman" :errorText="inputMsg.linkmanErrorText" @input="linkmanOverflow" :maxLength="6" errorColor="#4caf50" fullWidth />
+        <mu-text-field hintText="请输入您的手机号" type="number" v-model="inputData.phone" :errorText="inputMsg.phoneErrorText" @input="verifyPhone" :maxLength="11" errorColor="#4caf50" fullWidth />
+        <mu-flat-button slot="actions" @click="dialogClose" label="取消"/>
+        <mu-flat-button slot="actions" primary @click="dialogAffirm" label="确定"/>
+      </mu-dialog>
     </div>
   </section>
 </template>
@@ -52,15 +66,34 @@
   export default {
     data () {
       return {
-        data: {}
+        data: {},               // 页面数据
+        collect: true,         // 收藏
+        collectTxt: '收藏',   // 收藏文字提示
+        dialog: false,
+        inputData: {        // 弹出框，要发送的信息
+          linkman: '',
+          phone: '',
+          id: 0
+        },
+        inputMsg: {         // 提示文字
+          linkmanErrorText: '',
+          phoneErrorText: ''
+        },
+        pass: {
+          linkman: false,
+          phone: false
+        }
       }
     },
     created() {
+      this.detailAlloyTouch = null
+      this.phoneReg = /^1(3|4|5|7|8)\d{9}$/    // 手机号验证
+      this.collect ? this.collectTxt = '已收藏' : this.collectTxt = '收藏'
       this.getData()        // 获取数据
     },
     mounted() {
       setTimeout(() => {
-        this.head = this.$refs.head.clientHeight
+        this.head = this.$refs.head
         this.scroller = this.$refs.scroller   // 保存全局，方便调用
         this.alloy()      // 页面滚动，需要等资源全部加载完成再初始化
       }, 20)
@@ -71,13 +104,15 @@
       ])
     },
     methods: {
-      getData () {
+      getData () {          // 获取数据
         if (this.homeItem.id) {
           this.data = this.homeItem
         } else {
           let self = this
           // console.log(this.$route.params.id)
-          this.axios.post('/api/index/detail', {id: this.$route.params.id})
+          let id = this.$route.params.id
+          this.inputData.id = id            // 保存项目id
+          this.axios.post('/api/index/detail', {id: id})
             .then(function (response) {
               console.log(response)
               self.data = response.data
@@ -86,26 +121,23 @@
       },
       alloy() {
         let self = this
-        // let head = this.$refs.head.clientHeight          // 顶部距离
         let touch = this.$refs.wrapper
-        // let scroller = this.$refs.scroller   // 保存全局，方便调用
         let scaleImg = this.$refs.scaleImg    // 图片放大
         let percent = 0           // 放大scale and 偏移大小 size
         // 内容高度
         Transform(this.scroller, true)   // true代表关闭透视投影，因为scroller里面是有文本，防止文本在IOS中模糊
         Transform(scaleImg)
-
-        this.alloyTouch = new AlloyTouch({
+        this.detailAlloyTouch = new AlloyTouch({
           touch: touch,
           vertical: true,
           target: self.scroller,
           property: 'translateY',
           sensitivity: 0.8, // 不必需,触摸区域的灵敏度，默认值为1，可以为负数
           factor: 0.8, // 不必需,表示触摸位移与被运动属性映射关系，默认值是1
-          min: window.innerHeight - self.scroller.clientHeight - self.head,
+          min: Math.min(window.innerHeight - self.scroller.clientHeight - self.head.clientHeight, 0),
           max: 0,
           change: function (value) {
-            percent = Math.abs(value / self.head)
+            percent = Math.abs(value / self.head.clientHeight)
             if (value > 0) {      // 下拉放大
               percent += 1
               scaleImg.scaleX = scaleImg.scaleY = percent
@@ -120,16 +152,75 @@
         })
       },
       loadImage () {        // 图片加载完成再计算高度
-        this.$nextTick(() => {
-          this.head = this.$refs.head.clientHeight
-          this.alloyTouch.min = window.innerHeight - this.scroller.clientHeight - this.head
-        })
+        if (this.detailAlloyTouch) {
+          this.$nextTick(() => {
+            this.detailAlloyTouch.min = window.innerHeight - this.scroller.clientHeight - this.head.clientHeight
+          })
+        }
+      },
+      linkmanOverflow () {            //  验证用户名
+        this.inputMsg.linkmanErrorText = ''
+        if (this.inputData.linkman.length > 6 || this.inputData.linkman.length < 2) {
+          this.pass.linkman = false
+          // 用延迟的方式显示文字提示，有助于提升输入体验
+          if (this.timer) clearTimeout(this.timer)
+          this.timer = setTimeout(() => {
+            if (!this.pass.linkman) {
+              this.inputMsg.linkmanErrorText = '这个名字不靠谱'
+            }
+          }, 1000)
+        } else {
+          this.pass.linkman = true
+          this.inputMsg.linkmanErrorText = ''
+        }
+      },
+      verifyPhone () {      // 验证手机号是否合格
+        this.inputMsg.phoneErrorText = ''
+        if (!this.phoneReg.test(this.inputData.phone)) {
+          this.pass.phone = false
+          // 用延迟的方式显示文字提示，有助于提升输入体验
+          if (this.timer) clearTimeout(this.timer)
+          this.timer = setTimeout(() => {
+            if (!this.pass.phone) {
+              this.inputMsg.phoneErrorText = '手机号码有误'
+            }
+          }, 1000)
+        } else {
+          this.pass.phone = true
+          this.inputMsg.phoneErrorText = ''
+        }
+      },
+      attentionBtn () {       // 关注
+        this.dialog = true
+      },
+      dialogClose () {      // 关闭弹出框
+        this.dialog = false
+      },
+      dialogAffirm () {     // 弹出框确认，发送信息
+        if (this.pass.linkman && this.pass.phone) {
+          this.axios.post('/api/index/follow', this.inputData)
+            .then(function (response) {
+              console.log(response)
+            })
+        }
+      },
+      download () {       // 下载商业计划书
+      },
+      changeCollect () {      // 收藏
+        this.collect = !this.collect
+        console.log(this.collect)
+        this.collect ? this.collectTxt = '已收藏' : this.collectTxt = '收藏'
       },
       openSlideout () {     // 打开侧边栏导航
         window.slideNav.toggle()
       },
       back() {
         this.$router.back()
+      }
+    },
+    watch: {
+      data() {
+        this.loadImage()
       }
     }
   }
@@ -146,7 +237,7 @@
     bottom: 0;
     left: 0;
     z-index: 99;
-    // height: 100vh;
+    min-height: 100vh;
     background-color: #fff;
     .header {
       position: relative;
@@ -162,6 +253,7 @@
     // 滚动内容
     .scroller {
       padding-top: 16px;
+      padding-bottom: 40px;
       background-color: #fff;
       .top {
         padding: 0 16px;
@@ -252,12 +344,31 @@
     .business {
       padding: 20px;
       text-align: center;
+      .inline-block {
+        display: inline-block;
+      }
       .desc {
         margin: 0;
         padding-top: 5px;
         font-size: 14px;
         color: $color-background;
       }
+    }
+  }
+  // 关注
+  .attention {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    z-index: 9;
+    background-color: $color-background;
+    .mu-item {
+      padding: 0;
+      color: #fff;
     }
   }
 </style>
