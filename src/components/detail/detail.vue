@@ -8,42 +8,33 @@
         </mu-appbar>
       </header>
       <div class="image-wrap">
-        <img class="image" src="../../../static/case.jpg" @load="loadImage" ref="scaleImg">
+        <img class="image" :src="data.url" @load="loadImage" ref="scaleImg">
       </div>
     </div>
     <!-- 滚动区域 -->
     <div class="scroller" ref="scroller">
       <section class="top">
         <div class="collec">
-          <h3 class="name">项目名称</h3>
+          <h3 class="name">{{data.itemName}}</h3>
           <mu-checkbox label="收藏" class="demo-checkbox" uncheckIcon="favorite_border" checkedIcon="favorite"/>
           <mu-checkbox label="关注" class="demo-checkbox" uncheckIcon="favorite_border" checkedIcon="favorite"/>
         </div>
-        <p class="introduce">行到水穷处，坐看云起时。
-偶然值林叟，谈笑无还期。</p>
-        <p class="city"><mu-icon class="room" value="room"/>北京 / 北京</p>
+        <p class="introduce">{{data.introduce}}</p>
+        <p class="city"><mu-icon class="room" value="room"/>{{data.cityvalue}}</p>
       </section>
       <section class="classify">
         <mu-list-item class="item">
           <span class="title">项目分类：</span>
-          <span class="list">互联网</span>
+          <span class="list">{{data.cname}}</span>
         </mu-list-item>
         <mu-list-item class="item">
           <span class="title">项目阶段：</span>
-          <span class="list">产品已发布</span>
+          <span class="list">{{data.sname}}</span>
         </mu-list-item>
       </section>
       <section class="img-txt">
-        <p class="txt">这首诗意在极写隐居终南山之闲适怡乐，随遇而安之情。第一联叙述自己中年以
-后就厌恶世俗而信奉佛教。第二联写诗人的兴致和欣赏美景时的乐趣。第三联写心境
-闲适，随意而行，自由自在。最后一联进一步写出悠闲自得的心情。“偶然”遇“林
-叟”，便“谈笑”“无还期”了，写出了诗人淡逸的天性和超然物外的风采。对句既
-纯属自然，又含隐哲理。凝炼至此，实乃不易。</p>
-        <img class="image" src="../../../static/case.jpg" @load="loadImage">
-        <p class="txt">这首诗既是写景，也是写随遇而安的闲适恬淡之情。
-王维晚年官至尚书右丞，职务可谓不小。其实，由于政局变化反复，他早已看到仕途的艰险，便想超脱这个烦扰的尘世。他吃斋奉佛，悠闲自在，大约四十岁后，就开始过着亦官亦隐的生活。这首诗描写的，就是那种自得其乐的闲适情趣。
-　　开头两句：“中岁颇好道，晚家南山陲”，叙述自己中年以后即厌尘俗，而信奉佛教。“晚”是晚年；“南山陲”指辋川别墅所在地。此处原为宋之问别墅，王维得到这个地方后，完全被那里秀丽、寂静的田园山水陶醉了。他在《山中与裴秀才迪》的信中说：“足下方温经，猥不敢相烦。辄便往山中，憩感兴寺，与山僧饭讫而去。北涉玄灞，清月映郭；夜登华子冈，辋水沦涟，与月上下。寒山远火，明灭林外；深巷寒犬，吠声如豹；村墟夜舂，复与疏钟相间。此时独坐，僮仆静默，多思曩昔携手赋诗，步仄径、临清流也。”
-　　第三联，即言“胜事自知”。“行到水穷处”，是说随意而行，走到哪里算哪里，然而不知不觉，竟来到流水的尽头，看是无路可走了，于是索性就地坐了下来……</p>
+        <p class="txt">{{data.general}}</p>
+        <img class="image" :src="data.url" @load="loadImage">
       </section>
       <section class="business">
         <mu-float-button icon="file_download" class="demo-float-button"/>
@@ -61,7 +52,7 @@
   export default {
     data () {
       return {
-        src: '../../../static/case.jpg'
+        data: {}
       }
     },
     created() {
@@ -81,7 +72,17 @@
     },
     methods: {
       getData () {
-        console.log(this.homeItem)
+        if (this.homeItem.id) {
+          this.data = this.homeItem
+        } else {
+          let self = this
+          // console.log(this.$route.params.id)
+          this.axios.post('/api/index/detail', {id: this.$route.params.id})
+            .then(function (response) {
+              console.log(response)
+              self.data = response.data
+            })
+        }
       },
       alloy() {
         let self = this
@@ -119,10 +120,10 @@
         })
       },
       loadImage () {        // 图片加载完成再计算高度
-        setTimeout(() => {
+        this.$nextTick(() => {
           this.head = this.$refs.head.clientHeight
           this.alloyTouch.min = window.innerHeight - this.scroller.clientHeight - this.head
-        }, 50)
+        })
       },
       openSlideout () {     // 打开侧边栏导航
         window.slideNav.toggle()

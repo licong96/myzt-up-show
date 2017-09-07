@@ -160,7 +160,9 @@
                 self.list = response.data.list
                 self.page ++
               }
-              self.loadmore = true
+              setTimeout(() => {        // 权益之计
+                self.loadmore = true
+              }, 500)
             })
         }
       },
