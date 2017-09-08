@@ -16,7 +16,7 @@
       <section class="top">
         <div class="collec">
           <h3 class="name">{{data.itemName}}</h3>
-          <mu-checkbox :label="collectTxt" class="demo-checkbox" uncheckIcon="favorite_border" checkedIcon="favorite" :value="collect" @input="changeCollect"/>
+          <mu-checkbox :label="collectText" class="demo-checkbox" uncheckIcon="favorite_border" checkedIcon="favorite" :value="collect" @change="changeCollect"/>
         </div>
         <p class="introduce">{{data.introduce}}</p>
         <p class="city"><mu-icon class="room" value="room"/>{{data.cityvalue}}</p>
@@ -44,7 +44,7 @@
     </div>
     <!-- 关注 -->
     <section class="attention" @click="attentionBtn">
-      <mu-list-item>关注</mu-list-item>
+      <mu-list-item>{{attentionText}}</mu-list-item>
     </section>
     <!-- 关注填写信息 -->
     <div class="attention-dialog">
@@ -61,15 +61,16 @@
 <script>
   import Transform from 'css3transform'
   import AlloyTouch from 'alloytouch'
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
 
   export default {
     data () {
       return {
         data: {},               // 页面数据
-        collect: true,         // 收藏
-        collectTxt: '收藏',   // 收藏文字提示
+        collect: false,         // 收藏
+        attention: false,       // 关注
         dialog: false,
+        every: true,        // 阻止多次提交
         inputData: {        // 弹出框，要发送的信息
           linkman: '',
           phone: '',
@@ -88,7 +89,6 @@
     created() {
       this.detailAlloyTouch = null
       this.phoneReg = /^1(3|4|5|7|8)\d{9}$/    // 手机号验证
-      this.collect ? this.collectTxt = '已收藏' : this.collectTxt = '收藏'
       this.getData()        // 获取数据
     },
     mounted() {
@@ -99,25 +99,34 @@
       }, 20)
     },
     computed: {
+      collectText () {          // 收藏文字
+        let text = '收藏'
+        this.collect ? text = '已收藏' : text = '收藏'
+        return text
+      },
+      attentionText () {        // 关注文字
+        let text = '关注'
+        this.attention ? text = '已关注' : text = '关注'
+        return text
+      },
       ...mapGetters([
-        'homeItem'
+        'userInfo'
       ])
     },
     methods: {
       getData () {          // 获取数据
-        if (this.homeItem.id) {
-          this.data = this.homeItem
-        } else {
-          let self = this
-          // console.log(this.$route.params.id)
-          let id = this.$route.params.id
-          this.inputData.id = id            // 保存项目id
-          this.axios.post('/api/index/detail', {id: id})
-            .then(function (response) {
-              console.log(response)
-              self.data = response.data
-            })
-        }
+        let self = this
+        // console.log(this.$route.params.id)
+        let id = this.$route.params.id
+        this.inputData.id = id            // 保存项目id
+        this.axios.post('/api/index/detail', {id: id})
+          .then(function (response) {
+            console.log(response)
+            self.data = response.data
+            // 改变收藏和关注
+            self.data.collection ? self.collect = true : self.collect = false
+            self.data.follow ? self.attention = true : self.attention = false
+          })
       },
       alloy() {
         let self = this
@@ -191,37 +200,66 @@
         }
       },
       attentionBtn () {       // 关注
-        this.dialog = true
+        if (!this.attention) {
+          this.dialog = true
+        }
       },
       dialogClose () {      // 关闭弹出框
         this.dialog = false
       },
-      dialogAffirm () {     // 弹出框确认，发送信息
-        if (this.pass.linkman && this.pass.phone) {
+      dialogAffirm () {     // 弹出框确认，关注
+        let self = this
+        console.log(this.attention)
+        if (this.pass.linkman && this.pass.phone && !this.attention) {
           this.axios.post('/api/index/follow', this.inputData)
             .then(function (response) {
               console.log(response)
+              if (response.data.code === 1) {
+                self.attention = true
+                self.attentionTxt = '已关注'
+                self.dialog = false
+              }
             })
         }
       },
       download () {       // 下载商业计划书
       },
       changeCollect () {      // 收藏
-        this.collect = !this.collect
-        console.log(this.collect)
-        this.collect ? this.collectTxt = '已收藏' : this.collectTxt = '收藏'
+        let self = this
+        if (this.userInfo.user_id) {     // 判断是否登录再执行
+          if (this.every) {          // 只执行一次
+            this.every = false
+            this.axios.post('/api/index/collection', {id: this.inputData.id})
+            .then(function (response) {
+              self.collect = !self.collect
+              self.every = true
+            })
+          }
+        } else {
+          this.setLoginLink({loginLink: `/home/detail/${this.inputData.id}`})          // 保存到全局去，登录完后跳到回来
+          this.setDialog({muDialog: true})
+          this.setDialogText({muDialogText: '您还没有登陆'})
+          this.setDialogUrl({muDialogUrl: '/home/account/login'})
+        }
       },
       openSlideout () {     // 打开侧边栏导航
         window.slideNav.toggle()
       },
       back() {
         this.$router.back()
-      }
+      },
+      ...mapActions([
+        'setDialog',
+        'setDialogText',
+        'setDialogUrl',
+        'setLoginLink'
+      ])
     },
     watch: {
-      data() {
+      data () {         // 监听数据变化
         this.loadImage()
-      }
+      },
+      '$route': 'getData'     // 如果路由有变化，会再次执行该方法
     }
   }
 </script>
@@ -335,6 +373,8 @@
       .txt {
         margin: 0;
         padding: 15px 0;
+        font-size: 16px;
+        line-height: 1.8;
       }
       .image {
         display: block;

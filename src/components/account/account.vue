@@ -39,7 +39,7 @@
     },
     mounted() {
       this.$nextTick(() => {
-        this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
+        // this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
       })
     },
     methods: {

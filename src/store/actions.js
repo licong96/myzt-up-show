@@ -18,3 +18,6 @@ export const setLoginLink = function ({commit, state}, {loginLink}) {       //  
 export const setHomeItem = function ({commit, state}, {homeItem}) {       //  首页的列表详情页的数据
   commit(types.SET_HOMEITEM, homeItem)
 }
+export const setAlloyCountHeight = function ({commit, state}, {alloyCountHeight}) {       // 图片加载完成，计算min
+  commit(types.SET_ALLOYCOUNTHEIGHT, alloyCountHeight)
+}

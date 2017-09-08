@@ -21,7 +21,7 @@
     <!-- 没有列表显示这个 -->
     <div class="empty" v-show="!data.length">
       <mu-icon value="find_replace" class="icon"/>
-      <p class="desc">暂时没有此分类</p>
+      <p class="desc">暂时没有内容</p>
     </div>
   </section>
 </template>

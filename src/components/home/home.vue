@@ -42,10 +42,9 @@
       </div>
     </alloy-scroll>
     <!-- 详细页容器 -->
-    <transition name="tranx">
-      <router-view></router-view>
+    <transition name="tranx" mode="in-out">
+      <router-view class="homeview"></router-view>
     </transition>
-    <!-- 登录注册额外一个路由 -->
   </section>
 </template>
 

@@ -4,3 +4,4 @@ export const muDialogText = state => state.muDialogText
 export const muDialogUrl = state => state.muDialogUrl
 export const loginLink = state => state.loginLink
 export const homeItem = state => state.homeItem
+export const alloyCountHeight = state => state.alloyCountHeight

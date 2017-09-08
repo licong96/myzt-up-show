@@ -208,8 +208,8 @@
             self.dialog = false
             switch (response.data.code) {
               case 1:
-                self.$router.push({    // 注册成功就跳个人中心
-                  path: '/my/myUpload'
+                self.$router.replace({    // 注册成功
+                  path: '/home'
                 })
                 break
               default:

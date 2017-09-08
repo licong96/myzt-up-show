@@ -61,7 +61,9 @@
         })
       },
       countHeight (tophead) {            // 图片加载完成再计算高度
-        this.alloyTouch.min = window.innerHeight - this.targe.clientHeight - tophead
+        setTimeout(() => {
+          this.alloyTouch.min = window.innerHeight - this.targe.clientHeight - tophead
+        }, 20)
       },
       stop () {                   // 停止
         this.alloyTouch.stop()

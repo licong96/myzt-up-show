@@ -241,9 +241,10 @@
       this.wechatReg = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/         // 微信
     },
     mounted() {
-      setTimeout(() => {
-      }, 20)
-      // this.$nextTick(() => {})
+      this.$nextTick(() => {
+        this.coreImg = document.getElementsByClassName('g-core-image-corp-container')[0]
+        Transform(this.coreImg, true)
+      })
     },
     methods: {
       getIndustryList () {        // 获取项目分类，和阶段
@@ -270,10 +271,8 @@
         this.dialog = true
         this.dialogText = '图片不能超过2M'
       },
-      scroll (value) {        // 图片裁切页的滑动距离和页面保持一致
-        let core = document.getElementsByClassName('g-core-image-corp-container')[0]
-        Transform(core, true)
-        core.translateY = -value
+      scroll (obj) {        // 图片裁切页的滑动距离和页面保持一致，这是奇招
+        this.coreImg.translateY = -obj.value
       },
       linkmanOverflow () {    // 联系人验证
         this.inputMsg.linkmanErrorText = ''
@@ -378,7 +377,7 @@
             .then(function (response) {
               console.log(response)
               if (response.data.code === 1) {
-                self.ppt = response.data.url
+                self.ppt = response.data.fileid
               } else {
                 self.dialog = true
                 self.dialogText = '文件上传失败！'

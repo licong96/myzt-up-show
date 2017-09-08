@@ -67,7 +67,7 @@
         let self = this
         this.axios.get('/api/user/index')
           .then(function (response) {
-            // console.log(response)
+            console.log(response)
             if (response.data.user_id) {
               self.setUserInfo(response.data)     // 保存用户信息到vue
             } else {

@@ -3,7 +3,8 @@
     <div class="top">
       <div class="header">
         <mu-icon-button icon="close" slot="left" @click="back"/>
-        <mu-icon-button icon="settings" slot="right" @click="openSlideout"/>
+        <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
+        <!-- settings -->
       </div>
       <div class="head-color" ref="header"></div>
       <div class="user-logo-wrapper" ref="userLogo">
@@ -68,10 +69,7 @@
     },
     computed: {
       ...mapGetters([         // 获取
-        'userInfo',
-        'muDialog',
-        'muDialogText',
-        'muDialogUrl'
+        'alloyCountHeight'
       ])
     },
     methods: {
@@ -127,6 +125,11 @@
         this.$refs.scrolls.to(0)
         this.$refs.scrolls.countHeight(this.scrollHead)
       })
+    },
+    watch: {
+      alloyCountHeight () {
+        this.$refs.scrolls.countHeight(this.scrollHead)
+      }
     },
     components: {
       AlloyScroll

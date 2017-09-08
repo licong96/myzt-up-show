@@ -18,6 +18,9 @@ const matutaions = {
   },
   [types.SET_HOMEITEM](state, homeItem) {
     state.homeItem = homeItem
+  },
+  [types.SET_ALLOYCOUNTHEIGHT](state, alloyCountHeight) {
+    state.alloyCountHeight = alloyCountHeight
   }
 }
 
