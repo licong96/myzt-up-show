@@ -108,6 +108,7 @@
       }
     },
     beforeRouteEnter (to, from, next) {       // 在渲染该组件的对应路由被 confirm 前调用
+      console.log(to.name, from.name)
       next(vm => {
         vm.bottomNav = to.name
       })

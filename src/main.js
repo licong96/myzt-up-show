@@ -7,7 +7,6 @@ import store from './store'
 import MuseUI from 'muse-ui'
 // import fastclick from 'fastclick'
 import axios from 'axios'
-import 'whatwg-fetch'
 
 import '@/common/css/normalize.css'
 import 'muse-ui/dist/muse-ui.css'
