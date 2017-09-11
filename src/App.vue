@@ -33,7 +33,7 @@
     name: 'app',
     data () {
       return {
-        progress: false              // 加载中
+        progress: true              // 加载中
       }
     },
     created () {

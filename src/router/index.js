@@ -59,7 +59,7 @@ export default new Router({
       component: search
     },
     {
-      path: '/upload',
+      path: '/upload/:id',
       name: 'upload',
       component: upload
     },

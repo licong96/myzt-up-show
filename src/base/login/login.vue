@@ -111,10 +111,16 @@
             switch (response.data.code) {
               case 1:
                 self.setUserInfo({userInfo: response.data.result})        // 登录后保存到vuex
-                console.log(self.loginLink)
-                self.$router.replace({       // 登录成功就跳到之前的要去的地方，replace不会向 history 添加新记录
-                  path: self.loginLink
-                })
+                // console.log(self.loginLink)
+                if (self.loginLink) {
+                  self.$router.replace({       // 登录成功就跳到之前的要去的地方，replace不会向 history 添加新记录
+                    path: self.loginLink
+                  })
+                } else {
+                  self.$router.replace({
+                    path: '/home'
+                  })
+                }
                 break
               default:
                 self.dialogText = response.data.msg

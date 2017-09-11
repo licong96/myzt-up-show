@@ -24,6 +24,7 @@
 
 <script>
   import '@/common/js/gt'        // 急验证
+  import {mapGetters, mapActions} from 'vuex'
 
   export default {
     data () {
@@ -54,6 +55,12 @@
       setTimeout(() => {
         this.getCaptcha()         // 初始化已验证数据
       }, 20)
+    },
+    computed: {
+      ...mapGetters([
+        'userInfo',
+        'loginLink'
+      ])
     },
     methods: {
       verifyPhone () {      // 验证手机号是否合格
@@ -208,9 +215,17 @@
             self.dialog = false
             switch (response.data.code) {
               case 1:
-                self.$router.replace({    // 注册成功
-                  path: '/home'
-                })
+                self.setUserInfo({userInfo: response.data.result})        // 注册成功后保存到vuex
+                // console.log(self.loginLink)
+                if (self.loginLink) {
+                  self.$router.replace({       // 注册成功就跳到之前的要去的地方，replace不会向 history 添加新记录
+                    path: self.loginLink
+                  })
+                } else {
+                  self.$router.replace({
+                    path: '/home'
+                  })
+                }
                 break
               default:
                 self.dialogText = response.data.msg
@@ -221,7 +236,10 @@
       },
       dialogClose () {      // 关闭提示对话框
         this.dialog = false
-      }
+      },
+      ...mapActions([             // 修改
+        'setUserInfo'
+      ])
     }
   }
 </script>

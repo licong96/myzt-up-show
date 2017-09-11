@@ -1,15 +1,19 @@
 <template lang="html">
   <section class="my-recommend">
-    <my-recommend-item @select="selectLink" :data="item"></my-recommend-item>
+    <my-recommend-item @select="selectLink" :data="item" v-show="loadings"></my-recommend-item>
+    <loading v-show="!loadings"></loading>
   </section>
 </template>
 
 <script>
   import MyRecommendItem from '@/base/item/item'
+  import Loading from '@/base/loading/loading'
+
   export default {
     data () {
       return {
-        item: []
+        item: [],
+        loadings: false
       }
     },
     created () {
@@ -21,8 +25,11 @@
         this.axios.get('/api/project/myrecommend')
           .then(function (response) {
             console.log(response)
+            self.loadings = true        // 隐藏加载中
             if (response.data.code === 1) {
               self.item = response.data.list
+            } else {
+              self.item = []
             }
           })
       },
@@ -32,8 +39,14 @@
         })
       }
     },
+    watch: {
+      $route () {         // 如果路由有变化，会再次执行该方法
+        this.getData()
+      }
+    },
     components: {
-      MyRecommendItem
+      MyRecommendItem,
+      Loading
     }
   }
 </script>

@@ -20,7 +20,7 @@
     </div>
     <!-- 没有列表显示这个 -->
     <div class="empty" v-show="!data.length">
-      <mu-icon value="find_replace" class="icon"/>
+      <mu-icon value="refresh" class="icon"/>
       <p class="desc">暂时没有内容</p>
     </div>
   </section>

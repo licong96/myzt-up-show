@@ -13,7 +13,7 @@
         </mu-card-text>
         <mu-card-actions>
           <mu-flat-button label="查看" primary @click="selectItem(item)"/>
-          <!-- <mu-flat-button label="编辑"/> -->
+          <mu-flat-button label="编辑" primary @click="editItem(item)"/>
         </mu-card-actions>
       </mu-card>
     </div>
@@ -49,6 +49,9 @@
       selectItem (item) {    // 配发事件，实现路由跳转，返回自身数据
         this.$emit('select', item)
       },
+      editItem (item) {             // 编辑
+        this.$emit('edit', item)
+      },
       ...mapActions([
         'setAlloyCountHeight'
       ])
@@ -62,6 +65,8 @@
 </script>
 
 <style lang="scss" scoped>
+  @import "~common/sass/mini";
+
   .my-item {
     .mu-card {
       margin-bottom: 15px;
@@ -70,8 +75,15 @@
       height: 220px;
       overflow: hidden;
     }
+    .mu-card-title-container {
+      padding: 12px 16px;
+    }
     .mu-card-title-container .mu-card-title {
       font-size: 18px;
+    }
+    .mu-card-text {
+      padding-bottom: 10px;
+      @include border(b);
     }
   }
 </style>

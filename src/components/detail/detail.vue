@@ -55,12 +55,17 @@
         <mu-flat-button slot="actions" primary @click="dialogAffirm" label="确定"/>
       </mu-dialog>
     </div>
+    <!-- 加载中 -->
+    <article class="fixed-loading" v-show="loadings">
+      <loading></loading>
+    </article>
   </section>
 </template>
 
 <script>
   import Transform from 'css3transform'
   import AlloyTouch from 'alloytouch'
+  import Loading from '@/base/loading/loading'
   import {mapGetters, mapActions} from 'vuex'
 
   export default {
@@ -69,7 +74,7 @@
         data: {},               // 页面数据
         collect: false,         // 收藏
         attention: false,       // 关注
-        dialog: false,
+        dialog: false,          // 关注弹出输入
         every: true,        // 阻止多次提交
         inputData: {        // 弹出框，要发送的信息
           linkman: '',
@@ -83,7 +88,8 @@
         pass: {
           linkman: false,
           phone: false
-        }
+        },
+        loadings: true
       }
     },
     created() {
@@ -126,6 +132,7 @@
             // 改变收藏和关注
             self.data.collection ? self.collect = true : self.collect = false
             self.data.follow ? self.attention = true : self.attention = false
+            self.loadings = false
           })
       },
       alloy() {
@@ -223,6 +230,17 @@
         }
       },
       download () {       // 下载商业计划书
+        this.axios.post('/api/project/getppt', {id: this.inputData.id})
+        .then(function (response) {
+          console.log(response)
+          if (response.data.code === 1) {
+            window.location.href = response.data.url
+          } else {
+            this.setDialog({muDialog: true})
+            this.setDialogText({muDialogText: response.data.msg})
+            this.setDialogUrl({muDialogUrl: ''})
+          }
+        })
       },
       changeCollect () {      // 收藏
         let self = this
@@ -262,6 +280,9 @@
       $route () {         // 如果路由有变化，会再次执行该方法
         this.getData()
       }
+    },
+    components: {
+      Loading
     }
   }
 </script>
@@ -412,5 +433,16 @@
       padding: 0;
       color: #fff;
     }
+  }
+  // 加载中
+  .fixed-loading {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    margin-top: 56px;
+    background-color: #fff;
   }
 </style>

@@ -49,8 +49,6 @@
         bottomNav: 'myUpload'         // 导航切换，当前选中的
       }
     },
-    created () {
-    },
     mounted () {
       this.$nextTick(() => {
         this.header = this.$refs.header
@@ -69,6 +67,7 @@
     },
     computed: {
       ...mapGetters([         // 获取
+        'userInfo',
         'alloyCountHeight'
       ])
     },
@@ -108,7 +107,6 @@
       }
     },
     beforeRouteEnter (to, from, next) {       // 在渲染该组件的对应路由被 confirm 前调用
-      console.log(to.name, from.name)
       next(vm => {
         vm.bottomNav = to.name
       })

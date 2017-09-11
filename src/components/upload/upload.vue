@@ -194,7 +194,7 @@
           stage: 0,           // 项目阶段
           cityvalue: '北京 / 北京',  // 地区
           general: '',          // 项目概况
-          ppt: '',              // 商业计划书
+          pptid: 0,              // 商业计划书
           greement: true        // 默认同意协议书
         },
         inputMsg: {
@@ -231,10 +231,12 @@
         address: ['北京', '北京'],
         addressProvince: '北京',
         addressCity: '北京',
-        scrollValue: true         // 传给滚动页面，返回value
+        scrollValue: true,         // 传给滚动页面，返回value
+        editID: 0               // 通过这个判断是上传还是编辑
       }
     },
     created() {
+      this.editID = this.$route.params.id
       this.getIndustryList()        // 获取项目分类数据，和阶段
       this.phoneReg = /^1(3|4|5|7|8)\d{9}$/    // 手机号验证
       this.mailReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/     // 邮箱地址
@@ -244,15 +246,48 @@
       this.$nextTick(() => {
         this.coreImg = document.getElementsByClassName('g-core-image-corp-container')[0]
         Transform(this.coreImg, true)
+        // textarea内容超出滑动，和页面滑动起冲突了，所以阻止掉
+        window.addEventListener('touchmove', function(e) {
+          var target = e.target
+          if (target && target.tagName === 'TEXTAREA') {     // textarea阻止冒泡
+            e.stopPropagation()
+          }
+        }, true)
+        window.addEventListener('touchend', function(e) {
+          var target = e.target
+          if (target && target.tagName === 'TEXTAREA') {     // textarea阻止冒泡
+            e.stopPropagation()
+          }
+        }, true)
       })
     },
     methods: {
+      getEdit (id) {              // 能走到这一步，已不再是上传，而是编辑了
+        let self = this
+        this.axios.get('/api/project/edit?id=' + id)
+          .then(function (response) {
+            // console.log(response)
+            if (response.data.code === 1) {
+              self.inputData = response.data.result
+              self.inputData.image = self.inputData.url
+              self.inputData.greement = true
+              if (self.inputData.pptid) {
+                self.fileTxt = '文件已上传成功'
+              }
+            }
+          })
+      },
       getIndustryList () {        // 获取项目分类，和阶段
         let self = this
         this.axios.get('/api/project/getaddinfo')
         .then(function (response) {
           self.industryList = response.data.industry
           self.stageList = response.data.stage
+          // 判断是否有id，以此区分是上传还是编辑
+          if (self.editID) {
+            // console.log(self.editID)        // 不为0，表示编辑
+            self.getEdit(self.editID)          // 只有先获取到分类和阶段之后，才能完整显示
+          }
         })
       },
       imageuploaded (res) {   // 图片上传，后台返回
@@ -377,7 +412,7 @@
             .then(function (response) {
               console.log(response)
               if (response.data.code === 1) {
-                self.ppt = response.data.fileid
+                self.inputData.pptid = response.data.fileid
               } else {
                 self.dialog = true
                 self.dialogText = '文件上传失败！'
@@ -428,18 +463,34 @@
           this.dialogText = '您需要勾选同意协议，才能提交'
         } else {
           let self = this
-          this.axios.post('/api/project/add', this.inputData)
-          .then(function (response) {
-            console.log(response)
-            if (response.data.code === 1) {
-              self.$router.push({
-                path: '/my/myUpload'
+          // 判断是否有id，以此区分是上传还是编辑
+          if (self.editID) {
+            this.axios.post('/api/project/edit', this.inputData)
+              .then(function (response) {
+                // console.log(response)
+                if (response.data.code === 1) {
+                  self.$router.push({
+                    path: '/my/myUpload'
+                  })
+                } else {
+                  self.dialog = true
+                  self.dialogText = response.data.msg
+                }
               })
-            } else {
-              self.dialog = true
-              self.dialogText = response.data.msg
-            }
-          })
+          } else {
+            this.axios.post('/api/project/add', this.inputData)
+            .then(function (response) {
+              // console.log(response)
+              if (response.data.code === 1) {
+                self.$router.push({
+                  path: '/my/myUpload'
+                })
+              } else {
+                self.dialog = true
+                self.dialogText = response.data.msg
+              }
+            })
+          }
         }
       },
       dialogClose () {      // 关闭提示对话框

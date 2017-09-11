@@ -13,7 +13,7 @@
         <mu-list-item title="首页" @click="links('home')">
           <mu-icon slot="left" value="home"/>
         </mu-list-item>
-        <mu-list-item title="上传项目" @click="ifLinks('upload')">
+        <mu-list-item title="上传项目" @click="ifLinks('upload/0')">
           <mu-icon slot="left" value="cloud_upload"/>
         </mu-list-item>
         <mu-list-item title="我上传的项目" @click="ifLinks('my/myUpload')">
@@ -45,11 +45,7 @@
     computed: {
       login () {
         let n = true
-        if (this.userInfo.user_id) {
-          n = false
-        } else {
-          n = true
-        }
+        this.userInfo.user_id ? n = false : n = true
         return n
       },
       mobile () {
@@ -62,10 +58,10 @@
     methods: {
       links (path) {      // 跳转链接
         this.close()       // 先关闭侧边栏导航
+        this.setLoginLink({loginLink: this.$route.path})          // 保存到全局去，登录完后跳回来
         this.$router.push({
           path: `/${path}`
         })
-        // 所有去登陆的页面，都也后来，这是个问题啊，可以获取当前页面的路径，然后回来
       },
       ifLinks (path) {      // 这个是要判断是否登录，再跳转
         this.close()       // 先关闭侧边栏导航
@@ -74,7 +70,7 @@
             path: `/${path}`
           })
         } else {
-          this.setLoginLink({loginLink: `/${path}`})          // 保存到全局去，登录完后跳到
+          this.setLoginLink({loginLink: `/${path}`})          // 保存到全局去，登录完后跳回来
           this.setDialog({muDialog: true})
           this.setDialogText({muDialogText: '您还没有登陆'})
           this.setDialogUrl({muDialogUrl: '/home/account/login'})
