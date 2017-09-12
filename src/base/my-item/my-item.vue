@@ -14,6 +14,7 @@
         <mu-card-actions>
           <mu-flat-button label="查看" primary @click="selectItem(item)"/>
           <mu-flat-button label="编辑" primary @click="editItem(item)"/>
+          <mu-flat-button label="删除" primary v-show="item.status===0" @click="deleteItem(item)"/>
         </mu-card-actions>
       </mu-card>
     </div>
@@ -52,6 +53,9 @@
       editItem (item) {             // 编辑
         this.$emit('edit', item)
       },
+      deleteItem (item) {          // 删除
+        this.$emit('delete', item)
+      },
       ...mapActions([
         'setAlloyCountHeight'
       ])
@@ -82,8 +86,11 @@
       font-size: 18px;
     }
     .mu-card-text {
-      padding-bottom: 10px;
-      @include border(b);
+      margin-bottom: 10px;
+      @include nowrap-2;
+    }
+    .mu-card-actions {
+      @include border(t);
     }
   }
 </style>

@@ -9,6 +9,7 @@
 <script>
   import Transform from 'css3transform'
   import AlloyTouch from 'alloytouch'
+
   export default {
     props: {
       data: {
@@ -42,7 +43,7 @@
           property: 'translateY',
           sensitivity: 0.8, // 不必需,触摸区域的灵敏度，默认值为1，可以为负数
           factor: 0.8, // 不必需,表示触摸位移与被运动属性映射关系，默认值是1
-          min: window.innerHeight - self.targe.clientHeight - this.scrollHead,
+          min: window.innerHeight - self.targe.clientHeight - self.scrollHead,
           max: 0,
           change: function (value) {
             if (self.scrollValue) {     // 返回滚动位置

@@ -82,7 +82,7 @@
               <span class="desc">
                 项目介绍<mu-icon value="*" class="asterisk"/>
               </span>
-              <mu-text-field label="简要描写项目（30字以内）" type="text" labelFloat v-model="inputData.introduce" errorColor="#4caf50" multiLine :rows="2" :rowsMax="3" @textOverflow="introduceOverflow" :errorText="inputMsg.introduceErrorText" :maxLength="30" fullWidth />
+              <mu-text-field label="简要描写项目（50字以内）" type="text" labelFloat v-model="inputData.introduce" errorColor="#4caf50" multiLine :rows="2" :rowsMax="2" @textOverflow="introduceOverflow" :errorText="inputMsg.introduceErrorText" :maxLength="50" fullWidth />
             </li>
             <li class="info-li">
               <span class="desc">
@@ -236,7 +236,7 @@
       }
     },
     created() {
-      this.editID = this.$route.params.id
+      this.editID = parseInt(this.$route.params.id)         // 获取到的id是个字符串
       this.getIndustryList()        // 获取项目分类数据，和阶段
       this.phoneReg = /^1(3|4|5|7|8)\d{9}$/    // 手机号验证
       this.mailReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/     // 邮箱地址
@@ -246,7 +246,8 @@
       this.$nextTick(() => {
         this.coreImg = document.getElementsByClassName('g-core-image-corp-container')[0]
         Transform(this.coreImg, true)
-        // textarea内容超出滑动，和页面滑动起冲突了，所以阻止掉
+        // -------------------------------分割线------------------------------
+        // textarea内容超出滑动，和页面滑动起冲突了，所以在里面阻止掉
         window.addEventListener('touchmove', function(e) {
           var target = e.target
           if (target && target.tagName === 'TEXTAREA') {     // textarea阻止冒泡
@@ -285,7 +286,7 @@
           self.stageList = response.data.stage
           // 判断是否有id，以此区分是上传还是编辑
           if (self.editID) {
-            // console.log(self.editID)        // 不为0，表示编辑
+            console.log(self.editID)        // 不为0，表示编辑
             self.getEdit(self.editID)          // 只有先获取到分类和阶段之后，才能完整显示
           }
         })

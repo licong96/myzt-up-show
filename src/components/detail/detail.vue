@@ -33,7 +33,7 @@
       </section>
       <section class="img-txt">
         <p class="txt">{{data.general}}</p>
-        <img class="image" :src="data.url" @load="loadImage">
+        <!-- <img class="image" :src="data.url" @load="loadImage"> -->
       </section>
       <section class="business">
         <div class="inline-block" @click="download">

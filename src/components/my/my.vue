@@ -120,7 +120,8 @@
       if (from.name === 'myDetail') {
         return false
       }
-      this.$nextTick(() => {    // 检测图片是否加载完毕，用vuex保存状态，再初始化滚动，这是临时的
+      this.$refs.scrolls.stop()     // 每次切换的时候，停止滑动
+      this.$nextTick(() => {        // 检测图片是否加载完毕，用vuex保存状态，再初始化滚动，这是临时的
         this.$refs.scrolls.to(0)
         this.$refs.scrolls.countHeight(this.scrollHead)
       })
