@@ -2,8 +2,8 @@
   <section class="nav">
     <div class="wrap">
       <div class="login" v-show="login">
-        <mu-flat-button label="登录" class="demo-flat-button" @click="links('home/account/login')"/>
-        <mu-flat-button label="注册" class="demo-flat-button" @click="links('home/account/register')"/>
+        <mu-flat-button label="登录" class="demo-flat-button" @click="links('account/login')"/>
+        <mu-flat-button label="注册" class="demo-flat-button" @click="links('account/register')"/>
       </div>
       <div class="login" v-show="!login">
         <span class="phone">{{mobile}}</span>
@@ -73,7 +73,7 @@
           this.setLoginLink({loginLink: `/${path}`})          // 保存到全局去，登录完后跳回来
           this.setDialog({muDialog: true})
           this.setDialogText({muDialogText: '您还没有登陆'})
-          this.setDialogUrl({muDialogUrl: '/home/account/login'})
+          this.setDialogUrl({muDialogUrl: '/account/login'})
         }
       },
       quitLogin () {      // 退出登录

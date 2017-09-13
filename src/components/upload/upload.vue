@@ -214,7 +214,7 @@
         industryList: [],    // 项目分类
         stageList: [],   // 项目阶段
         bottomPopup: false,   // 打开关闭底部popup，选择城市
-        fileTxt: '选择文件',        // 商业计划书，文字显示
+        fileTxt: '请选择文件',        // 商业计划书，文字显示
         dialog: false,            // 提示框
         dialogText: '',           // 提示文字
         addressSlots: [
@@ -417,6 +417,7 @@
               } else {
                 self.dialog = true
                 self.dialogText = '文件上传失败！'
+                self.fileTxt = '请选择文件'
               }
             })
           }
@@ -438,7 +439,7 @@
         } else if (!this.pass.mail) {
           this.dialog = true
           this.dialogText = '邮箱号有误'
-        } else if (!this.pass.wechat) {
+        } else if (!this.pass.wechat && this.inputData.wechat) {      // 并且输入了微信号
           this.dialog = true
           this.dialogText = '微信号有误'
         } else if (this.inputData.itemName === '') {

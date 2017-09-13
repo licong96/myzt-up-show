@@ -1,29 +1,33 @@
 <template lang="html">
   <section class="account">
     <alloy-scroll class="listview" ref="scrolls">
-    <div class="top">
-      <div class="header">
-        <mu-icon-button icon="arrow_back" slot="left" @click="back"/>
-        <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
+      <div class="top">
+        <div class="header">
+          <mu-icon-button icon="arrow_back" slot="left" @click="back"/>
+          <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
+        </div>
+        <div class="logo">
+          <img class="img" src="../../common/images/logo.png" alt="">
+        </div>
+        <mu-paper>
+          <mu-bottom-nav :value="bottomNav" shift @change="handleChange">
+            <mu-bottom-nav-item value="login" title="登录" icon="face"/>
+            <mu-bottom-nav-item value="register" title="注册" icon="child_care"/>
+          </mu-bottom-nav>
+        </mu-paper>
       </div>
-      <div class="logo">
-        <img class="img" src="../../common/images/logo.png" alt="">
+      <div class="content">
+        <transition name="trany" mode="out-in">
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
+        </transition>
       </div>
-      <mu-paper>
-        <mu-bottom-nav :value="bottomNav" shift @change="handleChange">
-          <mu-bottom-nav-item value="login" title="登录" icon="face"/>
-          <mu-bottom-nav-item value="register" title="注册" icon="child_care"/>
-        </mu-bottom-nav>
-      </mu-paper>
-    </div>
-    <div class="content">
-      <transition name="trany" mode="out-in">
-        <keep-alive>
-          <router-view></router-view>
-        </keep-alive>
-      </transition>
-    </div>
-  </alloy-scroll>
+    </alloy-scroll>
+    <!-- 身份认证，单独视图 -->
+    <transition name="tranx">
+      <router-view name="selectian"></router-view>
+    </transition>
   </section>
 </template>
 
@@ -45,7 +49,7 @@
     methods: {
       handleChange (val) {
         this.$router.push({
-          path: `/home/account/${val}`
+          path: `/account/${val}`
         })
       },
       openSlideout () {   // 打开侧边栏导航

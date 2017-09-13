@@ -120,7 +120,7 @@
           // console.log(response)
           setTimeout(() => {
             if (response.data.code === 1) {
-              self.dialogText = '已发送短信验证码'
+              self.dialogText = '已发送短信验证码' + response.data.msg
               self.dialog = true
             } else {
               self.dialogText = response.data.msg
@@ -217,6 +217,7 @@
               case 1:
                 self.setUserInfo({userInfo: response.data.result})        // 注册成功后保存到vuex
                 // console.log(self.loginLink)
+                /*
                 if (self.loginLink) {
                   self.$router.replace({       // 注册成功就跳到之前的要去的地方，replace不会向 history 添加新记录
                     path: self.loginLink
@@ -226,6 +227,10 @@
                     path: '/home'
                   })
                 }
+                */
+                self.$router.replace({
+                  path: '/account/selectian'
+                })
                 break
               default:
                 self.dialogText = response.data.msg

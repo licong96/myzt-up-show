@@ -51,6 +51,7 @@
             self.loadings = true        // 隐藏加载中
             if (response.data.code === 1) {
               self.item = response.data.list
+              self.noItem = false
             } else {
               self.item = []
               self.noItem = true
@@ -106,7 +107,7 @@
           this.setLoginLink({loginLink: `/${path}`})          // 保存到全局去，登录完后跳到
           this.setDialog({muDialog: true})
           this.setDialogText({muDialogText: '您还没有登陆'})
-          this.setDialogUrl({muDialogUrl: '/home/account/login'})
+          this.setDialogUrl({muDialogUrl: '/account/login'})
         }
       },
       ...mapActions([

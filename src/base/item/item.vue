@@ -19,7 +19,7 @@
       </mu-list>
     </div>
     <!-- 没有列表显示这个 -->
-    <div class="empty" v-show="!data.length">
+    <div class="empty" v-show="empty">
       <mu-icon value="refresh" class="icon"/>
       <p class="desc">暂时没有内容</p>
     </div>
@@ -34,6 +34,11 @@
         default: []
       }
     },
+    data () {
+      return {
+        empty: false
+      }
+    },
     created () {
     },
     mounted () {
@@ -44,6 +49,13 @@
       }
     },
     watch: {
+      data () {       // 如果数据改变了，还是空，再显示无，避免第一次显示
+        if (this.data.length) {
+          this.empty = false
+        } else {
+          this.empty = true
+        }
+      }
     }
   }
 </script>

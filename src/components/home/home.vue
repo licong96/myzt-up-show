@@ -67,7 +67,8 @@
         labelActive: -1,      // 分类切换class
         scrollValue: true,    // 是否返回滑动value值
         loadmore: true,       // 执行滑动加载
-        page: 1               // 加载数据的页数
+        page: 1,              // 加载数据的页数
+        isnext: 0             // 记录能不能加载更多
       }
     },
     created () {
@@ -109,6 +110,7 @@
             // console.log(response)
             if (response.data.code === 1) {
               self.list = response.data.list
+              self.isnext = response.data.isnext        // 能不能加载更多
             }
             self.$nextTick(() => {
               self.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
@@ -124,7 +126,7 @@
           this.setLoginLink({loginLink: `/${path}`})          // 保存到全局去，登录完后跳到
           this.setDialog({muDialog: true})
           this.setDialogText({muDialogText: '您还没有登陆'})
-          this.setDialogUrl({muDialogUrl: '/home/account/login'})
+          this.setDialogUrl({muDialogUrl: '/account/login'})
         }
       },
       selectLink (item) {       // 获取列表点击事件的返回数据
@@ -149,6 +151,9 @@
           })
       },
       scroll (obj) {            // 滑动加载更多
+        if (this.isnext === 0) {      // 是0，表示没有更多要加载的
+          return
+        }
         if (obj.value <= obj.min + 5 && this.loadmore) {
           let self = this
           this.loadmore = false
@@ -156,10 +161,14 @@
             .then(function (response) {
               console.log(response)
               if (response.data.list.length) {
-                self.list = response.data.list
-                self.page ++
+                self.list = response.data.list      // 数组合并
+                self.isnext = response.data.isnext        // 能不能加载更多
+                self.page++
               }
-              setTimeout(() => {        // 权益之计
+              self.$nextTick(() => {
+                self.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
+              })
+              setTimeout(() => {
                 self.loadmore = true
               }, 500)
             })

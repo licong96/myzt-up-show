@@ -129,6 +129,14 @@ body {
     padding: 0 16px;
   }
 }
+.my-upload {
+  .mu-card-media-title {
+    padding: 10px 16px;
+    .mu-card-sub-title {
+      color: #fff;
+    }
+  }
+}
 
 // 注册-急验证
 .geetest_wind.geetest_panel .geetest_panel_box .geetest_panel_success {

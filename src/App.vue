@@ -7,11 +7,13 @@
     <!-- 内容 -->
     <section ref="panel" class="home-scroll">
       <transition name="opacity">
-        <router-view></router-view>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
       </transition>
     </section>
     <!-- 提示消息 -->
-    <mu-dialog :open="dialog" title="提示">
+    <mu-dialog :open="dialog" title="提示" @close="dialogClose">
       {{dialogText}}
       <mu-flat-button label="确定" slot="actions" primary @click="dialogClose"/>
     </mu-dialog>
@@ -33,7 +35,7 @@
     name: 'app',
     data () {
       return {
-        progress: true              // 加载中
+        progress: false              // 加载中
       }
     },
     created () {

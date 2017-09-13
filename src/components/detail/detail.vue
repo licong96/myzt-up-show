@@ -36,7 +36,7 @@
         <!-- <img class="image" :src="data.url" @load="loadImage"> -->
       </section>
       <section class="business">
-        <div class="inline-block" @click="download">
+        <div class="inline-block" @click="download" v-if="data.pptid">
           <mu-float-button icon="file_download" class="demo-float-button"/>
           <p class="desc">下载商业计划书</p>
         </div>
@@ -230,15 +230,10 @@
         }
       },
       download () {       // 下载商业计划书
-        this.axios.post('/api/project/getppt', {id: this.inputData.id})
+        this.axios.post('/api/project/getppt', {id: this.data.pptid})
         .then(function (response) {
-          console.log(response)
           if (response.data.code === 1) {
             window.location.href = response.data.url
-          } else {
-            this.setDialog({muDialog: true})
-            this.setDialogText({muDialogText: response.data.msg})
-            this.setDialogUrl({muDialogUrl: ''})
           }
         })
       },
@@ -257,7 +252,7 @@
           this.setLoginLink({loginLink: `/home/detail/${this.inputData.id}`})          // 保存到全局去，登录完后跳到回来
           this.setDialog({muDialog: true})
           this.setDialogText({muDialogText: '您还没有登陆'})
-          this.setDialogUrl({muDialogUrl: '/home/account/login'})
+          this.setDialogUrl({muDialogUrl: '/account/login'})
         }
       },
       openSlideout () {     // 打开侧边栏导航

@@ -46,12 +46,16 @@
             this.axios.post('/api/index/projectlist', {keyword: val})
             .then(function (response) {
               console.log(response)
-              if (response.data.count) {
+              if (response.data.list.length) {
                 this.item = response.data.list
                 this.empty = false
               } else {
                 this.empty = true
               }
+              this.$nextTick(() => {
+                console.log(this.$refs.scrolls.countHeight)
+                this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
+              })
             }.bind(this))
           }, 1000)
         } else {

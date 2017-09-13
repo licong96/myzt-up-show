@@ -12,6 +12,10 @@ import account from '@/components/account/account'
 import register from '@/base/register/register'
 import login from '@/base/login/login'
 import selectian from '@/components/selectian/selectian'
+import selectianOne from '@/components/selectian/one/one'
+import selectianTwo from '@/components/selectian/two/two'
+import selectianThree from '@/components/selectian/three/three'
+import selectianFour from '@/components/selectian/four/four'
 
 Vue.use(Router)
 
@@ -29,7 +33,7 @@ export default new Router({
         {
           path: 'detail/:id',                // ：id变量为路由
           component: detail
-        },
+        }/* ,
         {
           path: 'account',          // 登录注册
           component: account,
@@ -50,7 +54,7 @@ export default new Router({
               component: selectian
             }
           ]
-        }
+        } */
       ]
     },
     {
@@ -100,6 +104,47 @@ export default new Router({
           components: {
             detail: detail
           }
+        }
+      ]
+    },
+    {
+      path: '/account',          // 登录注册，独立一个view
+      component: account,
+      children: [
+        {
+          path: 'login',
+          name: 'login',
+          component: login
+        },
+        {
+          path: 'register',
+          name: 'register',
+          component: register
+        },
+        {
+          path: 'selectian',          // 选择投资人，项目方等
+          name: 'selectian',
+          components: {
+            selectian: selectian
+          },
+          children: [               // 选择身份
+            {
+              path: 'one',
+              component: selectianOne
+            },
+            {
+              path: 'two',
+              component: selectianTwo
+            },
+            {
+              path: 'three',
+              component: selectianThree
+            },
+            {
+              path: 'four',
+              component: selectianFour
+            }
+          ]
         }
       ]
     }
