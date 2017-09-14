@@ -1,13 +1,13 @@
 <template lang="html">
   <section class="home">
-    <alloy-scroll class="listview" ref="scrolls" :scroll-value="scrollValue" @scroll="scroll">
-      <div class="home-touch" ref="refelement">
-        <header class="header">
-          <mu-appbar title="首页">
-            <mu-icon-button icon="search" slot="left" to="/search"/>
-            <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
-          </mu-appbar>
-        </header>
+    <div class="home-touch">
+      <header class="header">
+        <mu-appbar title="首页">
+          <mu-icon-button icon="search" slot="left" to="/search"/>
+          <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
+        </mu-appbar>
+      </header>
+      <alloy-scroll class="listview" ref="scrolls" :scroll-value="scrollValue" :scroll-head="scrollHead" @scroll="scroll">
         <!-- 轮播图 -->
         <section id="slider" class="swipe" ref="swipes" data-slideout-ignore>
           <div class="swipe-wrap">
@@ -39,8 +39,8 @@
         <section class="item-wrap">
           <my-item @select="selectLink" :data="list"></my-item>
         </section>
-      </div>
-    </alloy-scroll>
+      </alloy-scroll>
+    </div>
     <!-- 详细页容器 -->
     <transition name="tranx" mode="in-out">
       <router-view class="homeview"></router-view>
@@ -59,6 +59,7 @@
   export default {
     data () {
       return {
+        scrollHead: 56,       // 滑动距离顶部位置
         swipeImg: [],         // 轮播图
         imgLoadOne: true,
         currentIndex: 0,      // 轮播图下面的点

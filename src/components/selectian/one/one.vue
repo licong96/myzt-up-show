@@ -55,40 +55,40 @@
       </article>
       <!-- 投资偏好 -->
       <transition name="tranx">
-          <article class="preference" v-show="!showNext">
-            <h4 class="title">填写投资偏好</h4>
-            <p class="message">为更好的提供服务，请完善您在平台的身份信息</p>
-            <mobile-tear-sheet>
-              <div class="mobile-wrap">
-                <p class="topic">关注领域：</p>
-                <div v-for="list in industryList">
-                  <mu-checkbox name="group" :nativeValue="list.id" v-model="preference.territory" :label="list.cname" class="demo-checkbox" />
-                </div>
+        <article class="preference" v-show="!showNext">
+          <h4 class="title">填写投资偏好</h4>
+          <p class="message">为更好的提供服务，请完善您在平台的身份信息</p>
+          <mobile-tear-sheet>
+            <div class="mobile-wrap">
+              <p class="topic">关注领域：</p>
+              <div v-for="list in industryList">
+                <mu-checkbox name="group" :nativeValue="list.id" v-model="preference.territory" :label="list.cname" class="demo-checkbox" />
               </div>
-            </mobile-tear-sheet>
-            <mobile-tear-sheet>
-              <div class="mobile-wrap">
-                <p class="topic">关注阶段：</p>
-                <div v-for="list in stageList">
-                  <mu-checkbox name="group" :nativeValue="list.id" v-model="preference.stage" :label="list.sname" class="demo-checkbox" />
-                </div>
-              </div>
-            </mobile-tear-sheet>
-            <mobile-tear-sheet>
-              <div class="mobile-wrap">
-                <p class="topic">单个项目可投金额（范围）：</p>
-                <div class="mobile-flex">
-                  <mu-text-field hintText="最低（万元）" type="number" v-model="preference.min" class="flex-1"/>
-                  <mu-icon value="trending_flat" class="line"/>
-                  <mu-text-field hintText="最高（万元）" type="number" v-model="preference.max" class="flex-1"/>
-                  <span class="ten">万元</span>
-                </div>
-              </div>
-            </mobile-tear-sheet>
-            <div class="submit">
-              <mu-raised-button label="提交" primary @click="submit"/>
             </div>
-          </article>
+          </mobile-tear-sheet>
+          <mobile-tear-sheet>
+            <div class="mobile-wrap">
+              <p class="topic">关注阶段：</p>
+              <div v-for="list in stageList">
+                <mu-checkbox name="group" :nativeValue="list.id" v-model="preference.stage" :label="list.sname" class="demo-checkbox" />
+              </div>
+            </div>
+          </mobile-tear-sheet>
+          <mobile-tear-sheet>
+            <div class="mobile-wrap">
+              <p class="topic">单个项目可投金额（范围）：</p>
+              <div class="mobile-flex">
+                <mu-text-field hintText="最低（万元）" type="number" v-model="preference.min" class="flex-1"/>
+                <mu-icon value="trending_flat" class="line"/>
+                <mu-text-field hintText="最高（万元）" type="number" v-model="preference.max" class="flex-1"/>
+                <span class="ten">万元</span>
+              </div>
+            </div>
+          </mobile-tear-sheet>
+          <div class="submit">
+            <mu-raised-button label="提交" primary @click="submit"/>
+          </div>
+        </article>
       </transition>
     </alloy-scroll>
   </section>
@@ -102,7 +102,7 @@
   export default {
     data () {
       return {
-        scrollHead: 100,          // 增加滑动距离
+        scrollHead: 56,          // 增加滑动距离
         showNext: true,          // 显示下一步
         survey: {                 // 问卷调查
           revenue: '',
@@ -157,9 +157,15 @@
           .then(function (response) {
             console.log(response)
             if (response.data.code === 1) {
-              this.showNext = false
-              this.$refs.scrolls.to(0)
-              this.$refs.scrolls.countHeight(this.scrollHead)
+              this.$refs.scrolls.to(0, 300)
+              setTimeout(() => {
+                this.showNext = false
+                this.$refs.scrolls.countHeight(this.scrollHead)
+              }, 300)
+            } else {
+              this.setMuDialog(true)
+              this.setMuDialogText(response.data.msg)
+              this.setMuDialogUrl('')
             }
           }.bind(this))
         }
@@ -177,7 +183,7 @@
           this.setMuDialog(true)
           this.setMuDialogText('请输入单个项目可投金额')
           this.setMuDialogUrl('')
-        } else if (this.preference.min > this.preference.max) {
+        } else if (parseInt(this.preference.min) > parseInt(this.preference.max)) {
           this.setMuDialog(true)
           this.setMuDialogText('最小金额不能大于最大金额')
           this.setMuDialogUrl('')
@@ -189,6 +195,10 @@
             if (response.data.code === 1) {
               self.setMuDialog(true)
               self.setMuDialogText('资料已提交，等待审核中，回首页')
+              self.setMuDialogUrl('/home')
+            } else {
+              self.setMuDialog(true)
+              self.setMuDialogText(response.data.msg)
               self.setMuDialogUrl('/home')
             }
           })

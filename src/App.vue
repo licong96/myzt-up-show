@@ -126,6 +126,8 @@
     right: 0;
     bottom: 0;
     left: 0;
+    max-width: 600px;
+    margin: 0 auto;
   }
   .progress {
     position: fixed;

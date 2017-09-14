@@ -15,7 +15,6 @@
       </div>
     </article>
     <!-- 选择身份 -->
-
     <transition name="tranx">
       <article class="main" v-show="!showNext">
         <mobile-tear-sheet>

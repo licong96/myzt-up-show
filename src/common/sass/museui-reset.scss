@@ -193,9 +193,9 @@ body {
   transform: translate3d(0, 20%, 0);
   opacity: 0;
 }
-// .opacity-enter-active, .opacity-leave-active {
-//   transition: all .2s;
-// }
-// .opacity-enter, .opacity-leave-to {
-//   opacity: .5;
-// }
+.opacity-enter-active, .opacity-leave-active {
+  transition: all .2s;
+}
+.opacity-enter, .opacity-leave-to {
+  opacity: 0;
+}

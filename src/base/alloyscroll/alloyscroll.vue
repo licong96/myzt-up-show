@@ -62,8 +62,10 @@
         })
       },
       countHeight (tophead) {            // 图片加载完成再计算高度
+        tophead = tophead | 0
+        console.log(tophead)
         setTimeout(() => {
-          this.alloyTouch.min = window.innerHeight - this.targe.clientHeight - tophead
+          this.alloyTouch.min = window.innerHeight - this.targe.clientHeight - tophead - this.scrollHead
         }, 20)
       },
       stop () {                   // 停止
@@ -74,10 +76,15 @@
       }
     },
     watch: {
-      data() {
-        setTimeout(() => {
+      data () {
+        self.$nextTick(() => {
           this.countHeight()
-        }, 20)
+        })
+      },
+      scrollHead () {
+        self.$nextTick(() => {
+          this.countHeight()
+        })
       }
     }
   }

@@ -16,6 +16,9 @@ import selectianOne from '@/components/selectian/one/one'
 import selectianTwo from '@/components/selectian/two/two'
 import selectianThree from '@/components/selectian/three/three'
 import selectianFour from '@/components/selectian/four/four'
+import wechat from '@/components/bind-wechat/bind-wechat'
+import gobing from '@/components/bind-wechat/gobing/gobing'
+import goregister from '@/components/bind-wechat/goregister/goregister'
 
 Vue.use(Router)
 
@@ -31,30 +34,9 @@ export default new Router({
       component: home,
       children: [
         {
-          path: 'detail/:id',                // ：id变量为路由
+          path: 'detail/:id',                // ：id变量为路由，首页详细页
           component: detail
-        }/* ,
-        {
-          path: 'account',          // 登录注册
-          component: account,
-          children: [
-            {
-              path: 'login',
-              name: 'login',
-              component: login
-            },
-            {
-              path: 'register',
-              name: 'register',
-              component: register
-            },
-            {
-              path: 'selectian',          // 选择投资人，项目方等
-              name: 'selectian',
-              component: selectian
-            }
-          ]
-        } */
+        }
       ]
     },
     {
@@ -145,6 +127,21 @@ export default new Router({
               component: selectianFour
             }
           ]
+        }
+      ]
+    },
+    {
+      path: '/wechat',          // 绑定微信登录
+      name: 'wechat',
+      component: wechat,
+      children: [
+        {
+          path: 'gobing',
+          component: gobing
+        },
+        {
+          path: 'goregister',
+          component: goregister
         }
       ]
     }

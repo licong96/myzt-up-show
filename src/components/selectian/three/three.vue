@@ -53,7 +53,7 @@
   export default {
     data () {
       return {
-        scrollHead: 100,
+        scrollHead: 56,
         preference: {
           companyName: '',
           companyPost: '',

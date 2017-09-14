@@ -78,7 +78,7 @@
           <p class="topic">对项目是否有利润要求：</p>
           <mu-radio label="是" name="profit" nativeValue="1" v-model="profit" class="demo-radio"/><br/>
           <div class="mobile-flex" v-if="profit==='1'">
-            <span class="head">营业额度范围</span>
+            <span class="head">利润额度范围</span>
             <mu-text-field hintText="最低" type="number" v-model="preference.profitMin" class="flex-1"/>
             <mu-icon value="trending_flat" class="line"/>
             <mu-text-field hintText="最高" type="number" v-model="preference.profitMax" class="flex-1"/>
@@ -102,7 +102,7 @@
   export default {
     data () {
       return {
-        scrollHead: 100,
+        scrollHead: 56,
         preference: {
           representative: '1',
           companyName: '',
