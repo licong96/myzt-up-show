@@ -2,8 +2,8 @@
   <section class="selectian">
     <header class="header">
       <mu-appbar title="身份认证">
-        <mu-icon-button icon="arrow_back" slot="left" @click="back"/>
-        <mu-icon-button icon="menu" slot="right" @click="openSlideout"/>
+        <!-- <mu-icon-button icon="arrow_back" slot="left" @click="back"/>
+        <mu-icon-button icon="menu" slot="right" @click="openSlideout"/> -->
       </mu-appbar>
     </header>
     <!-- 先填身份证 -->
@@ -15,24 +15,27 @@
       </div>
     </article>
     <!-- 选择身份 -->
-    <article class="main" v-show="!showNext">
-      <mobile-tear-sheet>
-        <mu-list>
-          <mu-list-item class="border-b" title="我要投资/查看项目(投资人)" @click="links('one')">
-            <mu-icon slot="right" value="keyboard_arrow_right"/>
-          </mu-list-item>
-          <mu-list-item class="border-b" title="我要领头项目(投资经理)" @click="links('two')">
-            <mu-icon slot="right" value="keyboard_arrow_right"/>
-          </mu-list-item>
-          <mu-list-item class="border-b" title="我要融资(创业者)" @click="links('three')">
-            <mu-icon slot="right" value="keyboard_arrow_right"/>
-          </mu-list-item>
-          <mu-list-item class="border-no" title="我要点评项目(产业专家)" @click="links('four')">
-            <mu-icon slot="right" value="keyboard_arrow_right"/>
-          </mu-list-item>
-        </mu-list>
-      </mobile-tear-sheet>
-    </article>
+
+    <transition name="tranx">
+      <article class="main" v-show="!showNext">
+        <mobile-tear-sheet>
+          <mu-list>
+            <mu-list-item class="border-b" title="我要投资/查看项目(投资人)" @click="links('one')">
+              <mu-icon slot="right" value="keyboard_arrow_right"/>
+            </mu-list-item>
+            <mu-list-item class="border-b" title="我要领头项目(投资经理)" @click="links('two')">
+              <mu-icon slot="right" value="keyboard_arrow_right"/>
+            </mu-list-item>
+            <mu-list-item class="border-b" title="我要融资(创业者)" @click="links('three')">
+              <mu-icon slot="right" value="keyboard_arrow_right"/>
+            </mu-list-item>
+            <mu-list-item class="border-no" title="我要点评项目(产业专家)" @click="links('four')">
+              <mu-icon slot="right" value="keyboard_arrow_right"/>
+            </mu-list-item>
+          </mu-list>
+        </mobile-tear-sheet>
+      </article>
+    </transition>
     <!-- 填写相应的信息 -->
     <transition name="tranx">
       <router-view></router-view>
@@ -85,9 +88,8 @@
           path: `/account/selectian/${path}`
         })
       },
-      back() {
+      back () {
         // this.$router.back()
-        alert('您需要进行身份验证')
       },
       openSlideout () {   // 打开侧边栏导航
         window.slideNav.toggle()
