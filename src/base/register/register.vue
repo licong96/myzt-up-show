@@ -216,6 +216,7 @@
             switch (response.data.code) {
               case 1:
                 self.setUserInfo({userInfo: response.data.result})        // 注册成功后保存到vuex
+                self.localstore.set('user', {phone: self.phone, password: self.password})          // 本地存储手机号和密码
                 // console.log(self.loginLink)
                 /*
                 if (self.loginLink) {

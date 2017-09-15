@@ -12,26 +12,58 @@
       <ul>
         <li class="flex-li">
           <span class="title">账号：</span>
-          <mu-text-field class="input" type="number" fullWidth/><br/>
+          <mu-text-field class="input" type="number" v-model="phone" fullWidth/><br/>
         </li>
         <li class="flex-li">
           <span class="title">密码：</span>
-          <mu-text-field class="input" type="password" fullWidth/><br/>
+          <mu-text-field class="input" type="password"  v-model="password" fullWidth/><br/>
         </li>
       </ul>
       <div class="submit">
-        <mu-raised-button label="绑定" class="demo-raised-button" primary fullWidth/>
+        <mu-raised-button label="绑定" class="demo-raised-button" primary fullWidth @click="submit"/>
       </div>
     </section>
   </section>
 </template>
 
 <script>
+  import {mapMutations} from 'vuex'
+
   export default {
+    data () {
+      return {
+        phone: '',
+        password: ''
+      }
+    },
     methods: {
+      submit () {
+        if (!this.phone) {
+          this.setMuDialog(true)
+          this.setMuDialogText('请输入账号/手机号）')
+        } else if (!this.password) {
+          this.setMuDialog(true)
+          this.setMuDialogText('请输入密码')
+        } else {
+          let self = this
+          this.axios.get('')
+            .then(function (response) {
+              console.log(response)
+            })
+            .catch(function () {
+              self.setMuDialog(true)
+              self.setMuDialogText('网络错误，请检查您的网络，或者刷新试试')
+            })
+        }
+      },
       back () {
         this.$router.back()
-      }
+      },
+      ...mapMutations({             // 设置
+        setMuDialog: 'SET_MUDIALOG',
+        setMuDialogText: 'SET_MUDIALOGTEXT',
+        setMuDialogUrl: 'SET_MUDIALOGURL'
+      })
     }
   }
 </script>

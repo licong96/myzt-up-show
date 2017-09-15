@@ -128,7 +128,11 @@
                 项目概况<mu-icon value="*" class="asterisk"/>
               </span>
               <mu-divider />
-              <mu-text-field label="项目概况" type="text" labelFloat v-model="inputData.general" errorColor="#4caf50" multiLine :rows="6" :rowsMax="6" fullWidth />
+              <mu-text-field label="项目概况" type="text" class="text-padding" labelFloat v-model="inputData.general" errorColor="#4caf50" multiLine :rows="6" :rowsMax="6" fullWidth />
+              <!-- 滑动这个输入区域显示提示 -->
+              <transition name="opacity">
+                <div class="dontmove" ref="dontmove" v-show="dontmove"></div>
+              </transition>
             </li>
             <li class="flex-li">
               <span class="desc business">
@@ -232,7 +236,8 @@
         addressProvince: '北京',
         addressCity: '北京',
         scrollValue: true,         // 传给滚动页面，返回value
-        editID: 0               // 通过这个判断是上传还是编辑
+        editID: 0,               // 通过这个判断是上传还是编辑
+        dontmove: false         // 项目概况滑动，显示边框表示不能话
       }
     },
     created() {
@@ -248,15 +253,18 @@
         Transform(this.coreImg, true)
         // -------------------------------分割线------------------------------
         // textarea内容超出滑动，和页面滑动起冲突了，所以在里面阻止掉
+        let self = this
         window.addEventListener('touchmove', function(e) {
           var target = e.target
           if (target && target.tagName === 'TEXTAREA') {     // textarea阻止冒泡
+            self.dontmove = true        // 在区域里滑动的时候，显示这个边框提示
             e.stopPropagation()
           }
         }, true)
         window.addEventListener('touchend', function(e) {
           var target = e.target
           if (target && target.tagName === 'TEXTAREA') {     // textarea阻止冒泡
+            self.dontmove = false       // 抬起的时候隐藏
             e.stopPropagation()
           }
         }, true)
@@ -282,11 +290,12 @@
         let self = this
         this.axios.get('/api/project/getaddinfo')
         .then(function (response) {
+          // console.log(response)
           self.industryList = response.data.industry
           self.stageList = response.data.stage
           // 判断是否有id，以此区分是上传还是编辑
+          // console.log(self.editID)        // 不为0，表示编辑
           if (self.editID) {
-            console.log(self.editID)        // 不为0，表示编辑
             self.getEdit(self.editID)          // 只有先获取到分类和阶段之后，才能完整显示
           }
         })
@@ -467,7 +476,7 @@
           let self = this
           // 判断是否有id，以此区分是上传还是编辑
           if (self.editID) {
-            this.axios.post('/api/project/edit', this.inputData)
+            this.axios.post('/api/project/edit', this.inputData)      // 编辑
               .then(function (response) {
                 // console.log(response)
                 if (response.data.code === 1) {
@@ -480,7 +489,7 @@
                 }
               })
           } else {
-            this.axios.post('/api/project/add', this.inputData)
+            this.axios.post('/api/project/add', this.inputData)     // 上传
             .then(function (response) {
               // console.log(response)
               if (response.data.code === 1) {
@@ -516,6 +525,9 @@
       },
       addressCity () {
         this.inputData.cityvalue = this.addressProvince + ' / ' + this.addressCity
+      },
+      $route () {         // 如果路由有变化，会再次执行该方法
+        this.getIndustryList()
       }
     },
     components: {
@@ -624,7 +636,17 @@
         }
       }
       .general {
+        position: relative;
         margin-top: 20px;
+        .dontmove {
+          position: absolute;
+          top: 60px;
+          left: 0;
+          z-index: 1;
+          width: 100%;
+          height: 164px;
+          border: 1px solid $color-background;
+        }
       }
     }
   }
@@ -678,5 +700,9 @@
     top: 0;
     bottom: 0;
     opacity: 0;
+  }
+  .text-padding {
+    padding: 10px 0;
+    z-index: 2;
   }
 </style>

@@ -7,9 +7,7 @@
     <!-- 内容 -->
     <section ref="panel" class="home-scroll">
       <transition name="opacity">
-        <keep-alive>
-          <router-view></router-view>
-        </keep-alive>
+        <router-view></router-view>
       </transition>
     </section>
     <!-- 提示消息 -->
@@ -39,7 +37,7 @@
       }
     },
     created () {
-      this.getUserID()
+      this.getUserID()      // 获取用户信息
       // 初始化弹出信息
       this.setMuDialog(false)
       this.setMuDialogText('')
@@ -65,20 +63,35 @@
       ])
     },
     methods: {
-      getUserID () {
+      getUserID () {            // 获取用户登录
         let self = this
         this.axios.get('/api/user/index')
           .then(function (response) {
             console.log(response)
-            if (response.data.user_id) {
-              self.setUserInfo(response.data)     // 保存用户信息到vue
+            if (response.data.user_id) {        // 判断是否有id
+              self.setUserInfo(response.data)         // 保存用户信息到vue
             } else {
-              self.setUserInfo({})
+              self.local()            // 没有登录，就去找本地存储，试试
             }
             setTimeout(() => {
               self.progress = false
             }, 50)
           })
+      },
+      local () {
+        let local = this.localstore.get('user')
+        console.log(local)
+        if (local) {              // 判断是否保存了用户信息到本地
+          this.axios.post('/api/user/login', {          // 调用登录
+            phone: local.phone,
+            password: local.password
+          })
+          .then(function (response) {
+            if (response.data.code === 1) {
+              this.setUserInfo(response.data.result)     // 保存用户信息到vue
+            }
+          }.bind(this))
+        }
       },
       initSlideout () {     // 初始化侧边栏导航
         let panel = this.$refs.panel
@@ -96,10 +109,14 @@
         this.setDialog({
           muDialog: false
         })
+        console.log(this.muDialogUrl)
         // 如果有url那就跳转
         if (this.muDialogUrl) {
           this.$router.push({
             path: this.muDialogUrl
+          })
+          this.setDialogUrl({         // 跳转完后，清除掉
+            muDialogUrl: ''
           })
         }
       },
@@ -110,7 +127,8 @@
         setMuDialogUrl: 'SET_MUDIALOGURL'
       }),
       ...mapActions([             // 修改
-        'setDialog'
+        'setDialog',
+        'setDialogUrl'
       ])
     },
     components: {

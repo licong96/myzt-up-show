@@ -13,7 +13,7 @@
         </mu-card-text>
         <mu-card-actions>
           <mu-flat-button label="查看" primary @click="selectItem(item)"/>
-          <mu-flat-button label="编辑" primary @click="editItem(item)"/>
+          <mu-flat-button label="编辑" primary v-show="item.status===0" @click="editItem(item)"/>
           <mu-flat-button label="删除" primary v-show="item.status===0" @click="deleteItem(item)"/>
         </mu-card-actions>
       </mu-card>

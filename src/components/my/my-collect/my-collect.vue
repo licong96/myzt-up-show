@@ -24,7 +24,7 @@
         let self = this
         this.axios.get('/api/project/mycollect')
           .then(function (response) {
-            console.log(response)
+            // console.log(response)
             self.loadings = true        // 隐藏加载中
             if (response.data.count) {
               self.item = response.data.list

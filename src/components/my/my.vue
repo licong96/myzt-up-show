@@ -8,8 +8,8 @@
       </div>
       <div class="head-color" ref="header"></div>
       <div class="user-logo-wrapper" ref="userLogo">
-        <div class="user-logo">
-          <img class="img" src="../../common/images/portrait4.png">
+        <div class="user-logo" @click="linkPortrait">
+          <img class="img" :src="userInfo.head_pic">
         </div>
       </div>
       <div class="nav-paper" ref="navPaper">
@@ -45,8 +45,10 @@
     data () {
       return {
         scrollValue: true,            // 返回滚动value
-        scrollHead: 56,               // min要减去的额外高度
-        bottomNav: 'myUpload'         // 导航切换，当前选中的
+        scrollHead: 32,               // min要减去的额外高度
+        bottomNav: 'myUpload',        // 导航切换，当前选中的
+        portraitUrl: '',              // 头像地址
+        portraitImg: ''               // 头像base64，用作显示
       }
     },
     mounted () {
@@ -97,6 +99,16 @@
           this.navPaper.translateY = obj.value / 1.2
         }
       },
+      linkSet () {              // 打开设置
+        this.$router.push({
+          path: '/my/seuser'
+        })
+      },
+      linkPortrait () {       // 跳转到头像页面
+        this.$router.push({
+          path: '/my/setuser/portrait'
+        })
+      },
       openSlideout () {   // 打开侧边栏导航
         window.slideNav.toggle()
       },
@@ -121,7 +133,7 @@
         return false
       }
       this.$refs.scrolls.stop()     // 每次切换的时候，停止滑动
-      this.$nextTick(() => {        // 检测图片是否加载完毕，用vuex保存状态，再初始化滚动，这是临时的
+      this.$nextTick(() => {
         this.$refs.scrolls.to(0)
         this.$refs.scrolls.countHeight(this.scrollHead)
       })

@@ -7,6 +7,7 @@ import store from './store'
 import MuseUI from 'muse-ui'
 // import fastclick from 'fastclick'
 import axios from 'axios'
+import localstore from 'store'
 
 import '@/common/css/normalize.css'
 import 'muse-ui/dist/muse-ui.css'
@@ -15,6 +16,7 @@ import '@/common/sass/museui-reset.scss'  // 修改样式
 
 Vue.use(MuseUI)
 Vue.prototype.axios = axios
+Vue.prototype.localstore = localstore       // 本地存储
 
 Vue.config.productionTip = false
 

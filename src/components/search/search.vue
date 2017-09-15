@@ -10,7 +10,7 @@
        <mu-auto-complete labelFloat label="输入要搜索的内容" fullWidth icon="search" @input="handleInput" :dataSource="dataSource"/>
     </section>
     <!-- 列表 -->
-    <alloy-scroll ref="scrolls" class="alloy">
+    <alloy-scroll ref="scrolls" class="alloy" :scroll-head="scrollHead" :data="item">
       <section v-show="item.length">
         <item @select="selectLink" :data="item"></item>
       </section>
@@ -33,6 +33,7 @@
   export default {
     data () {
       return {
+        scrollHead: 0,
         item: [],
         dataSource: [],
         empty: false
@@ -49,15 +50,21 @@
               if (response.data.list.length) {
                 this.item = response.data.list
                 this.empty = false
+                if (response.data.list.length >= 3) {     // 大于3，表示超过屏幕
+                  this.scrollHead = 152          // 只需要修改 scrollHead
+                  this.$refs.scrolls.to(0)
+                } else {
+                  this.scrollHead = 0
+                  this.$refs.scrolls.to(0)
+                }
               } else {
+                this.item = []
                 this.empty = true
+                this.scrollHead = 0
+                this.$refs.scrolls.to(0)
               }
-              this.$nextTick(() => {
-                console.log(this.$refs.scrolls.countHeight)
-                this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
-              })
             }.bind(this))
-          }, 1000)
+          }, 500)
         } else {
           this.item = []
           this.empty = false

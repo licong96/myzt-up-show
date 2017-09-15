@@ -1,5 +1,5 @@
 <template lang="html">
-  <!-- 绑定微信 -->
+  <!-- 绑定微信，功能暂无，但是保留 -->
   <section class="bind-wechat">
     <header class="header">
       <mu-appbar title="微信登录"></mu-appbar>

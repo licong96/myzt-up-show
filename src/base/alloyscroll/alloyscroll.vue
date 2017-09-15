@@ -41,8 +41,8 @@
           vertical: true,
           target: self.targe,
           property: 'translateY',
-          sensitivity: 0.8, // 不必需,触摸区域的灵敏度，默认值为1，可以为负数
-          factor: 0.8, // 不必需,表示触摸位移与被运动属性映射关系，默认值是1
+          sensitivity: 1, // 不必需,触摸区域的灵敏度，默认值为1，可以为负数
+          factor: 1, // 不必需,表示触摸位移与被运动属性映射关系，默认值是1
           min: window.innerHeight - self.targe.clientHeight - self.scrollHead,
           max: 0,
           change: function (value) {
@@ -63,7 +63,7 @@
       },
       countHeight (tophead) {            // 图片加载完成再计算高度
         tophead = tophead | 0
-        console.log(tophead)
+        // console.log(this.scrollHead, tophead)
         setTimeout(() => {
           this.alloyTouch.min = window.innerHeight - this.targe.clientHeight - tophead - this.scrollHead
         }, 20)
@@ -77,12 +77,12 @@
     },
     watch: {
       data () {
-        self.$nextTick(() => {
+        this.$nextTick(() => {
           this.countHeight()
         })
       },
       scrollHead () {
-        self.$nextTick(() => {
+        this.$nextTick(() => {
           this.countHeight()
         })
       }

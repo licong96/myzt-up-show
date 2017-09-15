@@ -19,6 +19,8 @@ import selectianFour from '@/components/selectian/four/four'
 import wechat from '@/components/bind-wechat/bind-wechat'
 import gobing from '@/components/bind-wechat/gobing/gobing'
 import goregister from '@/components/bind-wechat/goregister/goregister'
+import setuser from '@/components/my/setuser/setuser'
+import portrait from '@/components/my/setuser/portrait/portrait'
 
 Vue.use(Router)
 
@@ -86,6 +88,20 @@ export default new Router({
           components: {
             detail: detail
           }
+        },
+        {
+          path: 'setuser',
+          name: 'setuser',
+          components: {
+            detail: setuser
+          },
+          children: [
+            {
+              path: 'portrait',
+              name: 'portrait',
+              component: portrait
+            }
+          ]
         }
       ]
     },

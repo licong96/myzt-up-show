@@ -33,6 +33,8 @@
 
 <script>
   import AlloyScroll from '@/base/alloyscroll/alloyscroll'
+  import {mapGetters} from 'vuex'
+
   export default {
     data () {
       return {
@@ -46,6 +48,11 @@
         // this.$refs.scrolls.countHeight(0)      // 从新计算页面滚动高度
       })
     },
+    computed: {
+      ...mapGetters([
+        'loginLink'
+      ])
+    },
     methods: {
       handleChange (val) {
         this.$router.push({
@@ -56,8 +63,8 @@
         window.slideNav.toggle()
       },
       back() {      // 不再返回上一页，而是关闭本页
-        // this.$router.back()
-        this.$router.go(-this.backGo)
+        this.$router.back()
+        // this.$router.go(-this.backGo)
       }
     },
     beforeRouteEnter (to, from, next) {       // 在渲染该组件的对应路由被 confirm 前调用

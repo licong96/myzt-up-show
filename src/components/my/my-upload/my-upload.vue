@@ -47,7 +47,7 @@
         let self = this
         this.axios.get('/api/project/myupload')
           .then(function (response) {
-            console.log(response)
+            // console.log(response)
             self.loadings = true        // 隐藏加载中
             if (response.data.count) {
               self.item = response.data.list
