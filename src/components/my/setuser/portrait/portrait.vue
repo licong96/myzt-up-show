@@ -50,10 +50,14 @@
     },
     methods: {
       submit () {
-        // let self = this
+        let self = this
         this.axios.post('/api/user/updatehead', {head_pic: this.head_pic})
           .then(function (response) {
-            console.log(response)
+            // console.log(response)
+            if (response.data.code === 1) {
+              self.userInfo.head_pic = self.head_pic
+              self.back()
+            }
           })
       },
       imageuploaded (res) {   // 图片上传，后台返回

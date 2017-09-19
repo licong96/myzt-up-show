@@ -82,7 +82,7 @@
               <span class="desc">
                 项目介绍<mu-icon value="*" class="asterisk"/>
               </span>
-              <mu-text-field label="简要描写项目（50字以内）" type="text" labelFloat v-model="inputData.introduce" errorColor="#4caf50" multiLine :rows="2" :rowsMax="2" @textOverflow="introduceOverflow" :errorText="inputMsg.introduceErrorText" :maxLength="50" fullWidth />
+              <mu-text-field label="简要描写项目（50字以内）" type="text" labelFloat v-model="inputData.introduce" errorColor="#4caf50" multiLine :rows="2" :rowsMax="3" @textOverflow="introduceOverflow" :errorText="inputMsg.introduceErrorText" :maxLength="50" fullWidth />
             </li>
             <li class="info-li">
               <span class="desc">
@@ -128,10 +128,10 @@
                 项目概况<mu-icon value="*" class="asterisk"/>
               </span>
               <mu-divider />
-              <mu-text-field label="项目概况" type="text" class="text-padding" labelFloat v-model="inputData.general" errorColor="#4caf50" multiLine :rows="6" :rowsMax="6" fullWidth />
+              <mu-text-field label="项目概况" type="text" class="text-padding" labelFloat v-model="inputData.general" errorColor="#4caf50" multiLine :rows="6" :rowsMax="6" fullWidth  @input="generalLength"/>
               <!-- 滑动这个输入区域显示提示 -->
               <transition name="opacity">
-                <div class="dontmove" ref="dontmove" v-show="dontmove"></div>
+                <div class="dontmove" v-show="dontmove"></div>
               </transition>
             </li>
             <li class="flex-li">
@@ -237,7 +237,8 @@
         addressCity: '北京',
         scrollValue: true,         // 传给滚动页面，返回value
         editID: 0,               // 通过这个判断是上传还是编辑
-        dontmove: false         // 项目概况滑动，显示边框表示不能话
+        dontmove: false,         // 项目概况滑动，显示边框表示不能话
+        generalLengths: 0
       }
     },
     created() {
@@ -257,20 +258,30 @@
         window.addEventListener('touchmove', function(e) {
           var target = e.target
           if (target && target.tagName === 'TEXTAREA') {     // textarea阻止冒泡
-            self.dontmove = true        // 在区域里滑动的时候，显示这个边框提示
-            e.stopPropagation()
+            if (self.generalLengths > 96) {
+              self.dontmove = true        // 在区域里滑动的时候，显示这个边框提示
+              e.stopPropagation()
+            } else {
+              console.log('里面有值')
+              self.generalLengths = 0
+            }
           }
         }, true)
         window.addEventListener('touchend', function(e) {
           var target = e.target
           if (target && target.tagName === 'TEXTAREA') {     // textarea阻止冒泡
-            self.dontmove = false       // 抬起的时候隐藏
-            e.stopPropagation()
+            if (self.generalLengths > 96) {
+              self.dontmove = false       // 抬起的时候隐藏
+              e.stopPropagation()
+            }
           }
         }, true)
       })
     },
     methods: {
+      generalLength () {
+        this.generalLengths = this.inputData.general.length
+      },
       getEdit (id) {              // 能走到这一步，已不再是上传，而是编辑了
         let self = this
         this.axios.get('/api/project/edit?id=' + id)

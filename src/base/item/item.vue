@@ -6,7 +6,8 @@
           <mu-list-item class="list-wrap">
             <div class="list">
               <div class="image">
-                <img :src="item.url" class="img">
+                 <!-- :src="item.url" -->
+                <img class="loadimg" v-lazy="item.url">
               </div>
               <div class="content">
                 <h3 class="title">{{item.itemName}}</h3>
@@ -84,7 +85,7 @@
       .image {
         flex: 1;
         margin-right: 12px;
-        .img {
+        .loadimg {
           display: block;
           width: 100%;
         }

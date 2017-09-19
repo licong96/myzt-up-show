@@ -160,7 +160,7 @@ body {
 // 上传项目
 .upload {
   // 项目概况
-  .mu-text-field-input {
+  .general .mu-text-field-textarea {
     padding: 10px;
   }
   // 商业计划书
@@ -182,7 +182,19 @@ body {
   }
 }
 
-// 身份认证页
+// 图片加载动画
+.loadimg[lazy=loaded] {
+  animation: loader 1s both;
+}
+
+@keyframes loader {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 // 页面滑入动画
 .tranx-enter-active, .tranx-leave-active {

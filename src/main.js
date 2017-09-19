@@ -8,6 +8,7 @@ import MuseUI from 'muse-ui'
 // import fastclick from 'fastclick'
 import axios from 'axios'
 import localstore from 'store'
+import VueLazyLoad from 'vue-lazyload'
 
 import '@/common/css/normalize.css'
 import 'muse-ui/dist/muse-ui.css'
@@ -19,6 +20,12 @@ Vue.prototype.axios = axios
 Vue.prototype.localstore = localstore       // 本地存储
 
 Vue.config.productionTip = false
+
+// vue图片懒加载
+Vue.use(VueLazyLoad, {
+  error: require('common/images/loadimg.png'),
+  loading: require('common/images/loadimg.png')
+})
 
 if ('addEventListener' in document) {    // 取消移动端点击事件延迟
   document.addEventListener('DOMContentLoaded', function() {

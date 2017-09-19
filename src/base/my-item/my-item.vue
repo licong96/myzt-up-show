@@ -4,7 +4,7 @@
       <mu-card>
         <div @click="selectItem(item)">
           <mu-card-media :subTitle="item.sname">
-            <img :src="item.url" @load="loadImage"/>
+            <img v-lazy="item.url" class="loadimg" @load="loadImage"/>
           </mu-card-media>
         </div>
         <mu-card-title :title="item.itemName" :subTitle="item.cname"/>
